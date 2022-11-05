@@ -12,6 +12,6 @@
 
         public string CampaignBroadcastContainerName { get; set; }
 
-        public string CampaignBroadcastBaseContainerName { get; internal set; }
+        public string CampaignBroadcastBaseContainerName { get; set; }
     }
 }

@@ -37,7 +37,8 @@ namespace MarketingWebHooks.Models.Requests
         public string? Email { get; set; }
 
         [JsonProperty("timestamp")]
-        public string TimeStamp { get; set; }
+        [JsonPropertyName("timestamp")]
+        public uint TimeStamp { get; set; }
 
         public CampaignBroadcast ToCampaignBroadcast()
         {

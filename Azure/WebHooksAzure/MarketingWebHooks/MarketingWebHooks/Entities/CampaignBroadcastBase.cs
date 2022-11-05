@@ -16,10 +16,10 @@ namespace MarketingWebHooks.Entities
 
         public string? Status { get; set; }
 
-        public string? TimeStamp { get; set; }
+        public uint TimeStamp { get; set; }
 
-        public bool? IsLocked { get; set; }
+        public bool IsLocked { get; set; }
 
-        public string? LockDate { get; set; }
+        public DateTime LockDate { get; set; }
     }
 }

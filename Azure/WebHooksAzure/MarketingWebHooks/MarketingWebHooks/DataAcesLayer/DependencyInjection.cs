@@ -21,6 +21,7 @@ namespace MarketingWebHooks.DataAcesLayer
                 RequestTimeout = TimeSpan.FromMinutes(2),
                 IdleTcpConnectionTimeout = TimeSpan.FromMinutes(20),
                 EnableContentResponseOnWrite = false,
+                AllowBulkExecution = true,
             };
 
             CosmosClient cosmosClient = new CosmosClient(Environment.GetEnvironmentVariable("COSMOS_END_POINT"),

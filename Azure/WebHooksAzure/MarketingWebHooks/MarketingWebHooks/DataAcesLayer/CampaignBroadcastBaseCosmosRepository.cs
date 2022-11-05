@@ -1,4 +1,5 @@
 ﻿using MarketingWebHooks.Entities;
+using MarketingWebHooks.Helpers;
 using MarketingWebHooks.ResiliencePolicy;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
@@ -111,11 +112,14 @@ namespace MarketingWebHooks.DataAcesLayer
             return entity;
         }
 
-        public async Task<List<CampaignBroadcastBase>> GetByEventKeyAsync(int eventKey)
+        public async Task<List<CampaignBroadcastBase>> GetEmailStatuses(int countToProcess = 100)
         {
             try
             {
-                var queryString = $"select * from CampaignBroadcastBase i where i.hhihEventKey = {eventKey}";
+                var deltaTime = DateTime.UtcNow
+                    .AddHours(EnvironmentVariableHelper.GetEnvironmentVariableOrDefaulf("REBUILD_THUMB_TIME_DELTA_IN_HOURS", 10));
+                
+                var queryString = $"SELECT TOP {countToProcess} * FROM CampaignBroadcastBase c WHERE c.IsLocked = false AND c.LockDate < \"{deltaTime}\"";
 
                 List<CampaignBroadcastBase> items = new List<CampaignBroadcastBase>();
 
@@ -125,7 +129,7 @@ namespace MarketingWebHooks.DataAcesLayer
                 {
                     FeedResponse<CampaignBroadcastBase> queryResponse = await queryable.ReadNextAsync();
 
-                    _logger.LogInformation($"ImageCosmosRepository|GetByEventKey:Query batch consumed {queryResponse.RequestCharge} request units");
+                    _logger.LogInformation($"CampaignBroadcastBaseCosmosRepository|GetByEventKey:Query batch consumed {queryResponse.RequestCharge} request units");
 
                     items.AddRange(queryResponse.Resource.ToList());
                 }
@@ -141,14 +145,26 @@ namespace MarketingWebHooks.DataAcesLayer
             }
             catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                _logger.LogWarning($"ImageCosmosRepository|GetByEventKey: NotFound. Exception Message: {ex.Message} : Stack: {ex.StackTrace}");
+                _logger.LogWarning($"CampaignBroadcastBaseCosmosRepository|GetByEventKey: NotFound. Exception Message: {ex.Message} : Stack: {ex.StackTrace}");
             }
             catch (Exception ex)
             {
-                _logger.LogError($"ImageCosmosRepository|GetByEventKey: Failed. Exception Message: {ex.Message} : Stack: {ex.StackTrace}");
+                _logger.LogError($"CampaignBroadcastBaseCosmosRepository|GetByEventKey: Failed. Exception Message: {ex.Message} : Stack: {ex.StackTrace}");
             }
 
             return null;
+        }
+
+        public async Task BulkUpdateAsync(List<CampaignBroadcastBase> items)
+        {
+            var concurrentTasks = new List<Task>();
+
+            foreach (var item in items)
+            {
+                concurrentTasks.Add(_context.Container.UpsertItemAsync(item, new PartitionKey(item.Id)));
+            }
+
+            await Task.WhenAll(concurrentTasks);
         }
     }
 }

@@ -64,7 +64,7 @@ namespace MarketingWebHooks.Functions.HttpTriggers
                         _logger.LogInformation("SendGridWebhook|SendMessageCampaignBroadcastProcessAsync");
 
                         // Send a message to CampaignBroadcastQueue
-                        await _queueMessageService.SendMessageCampaignBroadcastEmailProcessAsync(item.ToCampaignBroadcast());
+                        await _queueMessageService.SendMessageCampaignBroadcastEmailBaseProcessAsync(item.ToCampaignBroadcastBase());
                     }
                 }                
             }

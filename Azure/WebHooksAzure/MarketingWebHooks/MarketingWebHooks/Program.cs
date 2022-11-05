@@ -1,5 +1,6 @@
 using Azure.Core;
 using MarketingWebHooks.DataAcesLayer;
+using MarketingWebHooks.Helpers;
 using MarketingWebHooks.ResiliencePolicy;
 using MarketingWebHooks.Services;
 using Microsoft.Extensions.Configuration;
@@ -38,7 +39,7 @@ namespace MarketingWebHooks
                     //services.AddSingleton<IImageResizer, ImageSharpResizer>();
                     //services.AddSingleton<IUploadFileValidator, UploadFileValidator>();
                     //services.AddSingleton<IUploadFileHelper, UploadFileHelper>();
-                    //services.AddSingleton<IHttpHelper, HttpHelper>();
+                    services.AddSingleton<IHttpHelper, HttpHelper>();
                     //services.AddScoped<IImageService, ImageService>();
                     services.AddSingleton<IQueueMessageService, AzurServiceBusQueueMessageService>();
                     services.AddSingleton<IRetryPolicy, RetryPolicy>();
