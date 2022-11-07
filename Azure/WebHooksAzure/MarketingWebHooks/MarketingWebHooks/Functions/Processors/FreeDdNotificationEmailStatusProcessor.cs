@@ -10,9 +10,9 @@ namespace MarketingWebHooks.Functions.Processors
     public class FreeDdNotificationEmailStatusProcessor
     {
         private readonly ILogger _logger;
-        private readonly IFreeDdNotificationRepository _freeDdNotificationRepository;
+        private readonly IFreeDdEmailNotificationRepository _freeDdNotificationRepository;
 
-        public FreeDdNotificationEmailStatusProcessor(ILoggerFactory loggerFactory, IFreeDdNotificationRepository repository)
+        public FreeDdNotificationEmailStatusProcessor(ILoggerFactory loggerFactory, IFreeDdEmailNotificationRepository repository)
         {
             _logger = loggerFactory.CreateLogger<FreeDdNotificationEmailStatusProcessor>();
             _freeDdNotificationRepository = repository;

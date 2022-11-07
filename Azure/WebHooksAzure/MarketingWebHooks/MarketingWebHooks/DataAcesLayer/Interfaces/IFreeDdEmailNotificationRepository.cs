@@ -2,7 +2,7 @@
 
 namespace MarketingWebHooks.DataAcesLayer.Interfaces
 {
-    public interface IFreeDdNotificationRepository : IRepository<FreeDdEmailNotificationStatus>
+    public interface IFreeDdEmailNotificationRepository : IRepository<FreeDdEmailNotificationStatus>
                                                     , IGetEmailStatuses<FreeDdEmailNotificationStatus>
     {
 

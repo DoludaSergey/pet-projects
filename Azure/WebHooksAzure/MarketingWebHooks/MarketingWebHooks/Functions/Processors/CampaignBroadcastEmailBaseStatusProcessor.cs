@@ -10,9 +10,9 @@ namespace MarketingWebHooks.Functions.Processors
     public class CampaignBroadcastEmailBaseStatusProcessor
     {
         private readonly ILogger _logger;
-        private readonly ICampaignBroadcastBaseRepository _campaignBroadcastRepository;
+        private readonly ICampaignBroadcastEmailStatusRepository _campaignBroadcastRepository;
 
-        public CampaignBroadcastEmailBaseStatusProcessor(ILoggerFactory loggerFactory, ICampaignBroadcastBaseRepository campaignBroadcastRepository)
+        public CampaignBroadcastEmailBaseStatusProcessor(ILoggerFactory loggerFactory, ICampaignBroadcastEmailStatusRepository campaignBroadcastRepository)
         {
             _logger = loggerFactory.CreateLogger<CampaignBroadcastEmailBaseStatusProcessor>();
             _campaignBroadcastRepository = campaignBroadcastRepository;

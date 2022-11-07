@@ -34,8 +34,8 @@ namespace MarketingWebHooks.DataAcesLayer
 
             services.AddSingleton<ICosmosRetryPolicy, CosmosRetryPolicy>();
 
-            services.AddScoped<ICampaignBroadcastBaseRepository, CampaignBroadcastEmailStatusCosmosRepository>();
-            services.AddScoped<IFreeDdNotificationRepository, FreeDdEmailNotificationCosmosRepository>();
+            services.AddScoped<ICampaignBroadcastEmailStatusRepository, CampaignBroadcastEmailStatusCosmosRepository>();
+            services.AddScoped<IFreeDdEmailNotificationRepository, FreeDdEmailNotificationCosmosRepository>();
 
             return services;
         }

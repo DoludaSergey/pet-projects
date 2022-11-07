@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 namespace MarketingWebHooks.DataAcesLayer.Repositories
 {
     public class CampaignBroadcastEmailStatusCosmosRepository :
-        BaseCosmosRepositoryWithGetEmaleStatuses<CampaignBroadcastEmailStatus>, ICampaignBroadcastBaseRepository
+        BaseCosmosRepositoryWithGetEmaleStatuses<CampaignBroadcastEmailStatus>, ICampaignBroadcastEmailStatusRepository
     {
         public CampaignBroadcastEmailStatusCosmosRepository(ILoggerFactory loggerFactory, ICosmosRetryPolicy retryPolicy,
                                                   CosmosSettings cosmosSettings, CosmosClient cosmosClient)
