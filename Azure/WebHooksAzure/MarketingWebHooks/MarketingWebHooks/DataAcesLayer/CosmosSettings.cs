@@ -10,8 +10,10 @@
 
         public string DatabaseName { get; set; }
 
-        public string CampaignBroadcastContainerName { get; set; }
+        public string CampaignBroadcastEmailStatusContainerName { get; set; }
 
         public string CampaignBroadcastBaseContainerName { get; set; }
+
+        public string FreeDdEmailNotificationStatusContainerName { get; set; }
     }
 }

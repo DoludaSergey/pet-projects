@@ -1,6 +1,5 @@
 ﻿using Azure.Messaging.ServiceBus;
 using MarketingWebHooks.Entities;
-using MarketingWebHooks.Models.Requests;
 using MarketingWebHooks.ResiliencePolicy;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
@@ -30,7 +29,7 @@ namespace MarketingWebHooks.Services
                     Mode = ServiceBusRetryMode.Fixed,
                     TryTimeout = TimeSpan.FromMinutes(2),
                     //Delay = TimeSpan.FromSeconds(3),
-                    MaxRetries = 5
+                    MaxRetries = 3
                 }
             };
 
@@ -40,17 +39,12 @@ namespace MarketingWebHooks.Services
             _retryPolicy = retryPolicy;
         }
 
-        public async Task SendMessageCampaignBroadcastEmailBaseProcessAsync(CampaignBroadcastBase data)
+        public async Task SendMessageCampaignBroadcastEmailBaseProcessAsync(CampaignBroadcastEmailStatus data)
         {
             await this.SendMessageAsync(data, SERVER_BUS_QUEUE_CAMPAIGN_BROADCAST_EMAIL_BASE_STATUS_PROCESS);
         }
 
-        public async Task SendMessageCampaignBroadcastEmailProcessAsync(CampaignBroadcast data)
-        {
-            await this.SendMessageAsync(data, SERVER_BUS_QUEUE_CAMPAIGN_BROADCAST_EMAIL_STATUS_PROCESS);
-        }
-
-        public async Task SendMessageFreeDdNotificationEmailProcessAsync(SendGridWebhookModel data)
+        public async Task SendMessageFreeDdNotificationEmailProcessAsync(FreeDdEmailNotificationStatus data)
         {
             await this.SendMessageAsync(data, SERVER_BUS_QUEUE_FREE_DD_NOTIFICATION_EMAIL_STATUS_PROCESS);
         }

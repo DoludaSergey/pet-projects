@@ -1,17 +1,19 @@
-﻿using MarketingWebHooks.Entities;
+﻿using MarketingWebHooks.DataAcesLayer.Interfaces;
+using MarketingWebHooks.Entities;
 using MarketingWebHooks.ResiliencePolicy;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
-using Polly;
 
-namespace MarketingWebHooks.DataAcesLayer
+namespace MarketingWebHooks.DataAcesLayer.Repositories
 {
-    public class BaseCosmosRepository<T> where T : class, IEntity
+    public abstract class BaseCosmosRepository<T> : IRepository<T> where T : class, IEntity
     {
         protected Container _container;
         protected ILogger _logger;
         protected ICosmosRetryPolicy _retryPolicy;
         protected string _repositoryName;
+
+        protected string ContainerName { get; set; }
 
         public async Task<T?> AddAsync(T entity)
         {
@@ -98,7 +100,7 @@ namespace MarketingWebHooks.DataAcesLayer
             {
                 _logger.LogInformation($"{_repositoryName}|UpdateAsync: Started UpsertItemAsync {entity.Id}");
 
-                return await _container.UpsertItemAsync<T>(entity, partitionKey);
+                return await _container.UpsertItemAsync(entity, partitionKey);
             });
 
             _logger.LogInformation($"{_repositoryName}|UpdateAsync RequestCharge - {response.RequestCharge} for {entity.Id}");

@@ -3,14 +3,11 @@ using System.Text.Json.Serialization;
 
 namespace MarketingWebHooks.Entities
 {
-    public sealed class CampaignBroadcastBase : IEntity
+    public abstract class WebhookModelBase : IEntity
     {
-
         [JsonProperty("id")]
         [JsonPropertyName("id")]
         public string Id { get; set; }
-
-        public int CampaignBroadcastKey { get; set; }
 
         public string? MessageId { get; set; }
 

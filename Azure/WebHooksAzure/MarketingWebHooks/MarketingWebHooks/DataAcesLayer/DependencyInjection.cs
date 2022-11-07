@@ -1,4 +1,6 @@
-﻿using MarketingWebHooks.ResiliencePolicy;
+﻿using MarketingWebHooks.DataAcesLayer.Interfaces;
+using MarketingWebHooks.DataAcesLayer.Repositories;
+using MarketingWebHooks.ResiliencePolicy;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -30,13 +32,10 @@ namespace MarketingWebHooks.DataAcesLayer
             services.AddSingleton<CosmosSettings>(cosmosSettings);
             services.AddSingleton<CosmosClient>(cosmosClient);
 
-            services.AddSingleton<ICampaignBroadcastCosmosContext, CampaignBroadcastCosmosContext>();
-            services.AddSingleton<ICampaignBroadcastBaseCosmosContext, CampaignBroadcastBaseCosmosContext>();
-
             services.AddSingleton<ICosmosRetryPolicy, CosmosRetryPolicy>();
 
-            services.AddScoped<ICampaignBroadcastRepository, CampaignBroadcastCosmosRepository>();
-            services.AddScoped<ICampaignBroadcastBaseRepository, CampaignBroadcastBaseCosmosRepository>();
+            services.AddScoped<ICampaignBroadcastBaseRepository, CampaignBroadcastEmailStatusCosmosRepository>();
+            services.AddScoped<IFreeDdNotificationRepository, FreeDdEmailNotificationCosmosRepository>();
 
             return services;
         }

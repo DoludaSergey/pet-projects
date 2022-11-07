@@ -1,4 +1,4 @@
-using MarketingWebHooks.DataAcesLayer;
+using MarketingWebHooks.DataAcesLayer.Interfaces;
 using MarketingWebHooks.Helpers;
 using MarketingWebHooks.Models.Responses;
 using Microsoft.Azure.Functions.Worker;
@@ -31,7 +31,7 @@ namespace MarketingWebHooks.Functions.HttpTriggers
 
                 if (emailStatuses is null)
                 {
-                    emailStatuses = new List<Entities.CampaignBroadcastBase>();
+                    emailStatuses = new List<Entities.CampaignBroadcastEmailStatus>();
 
                     return await _httpHelper.CreateFailedHttpResponseAsync(requestData, emailStatuses);
                 }

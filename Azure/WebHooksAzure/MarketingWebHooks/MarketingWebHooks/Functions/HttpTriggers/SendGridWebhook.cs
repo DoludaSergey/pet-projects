@@ -56,7 +56,7 @@ namespace MarketingWebHooks.Functions.HttpTriggers
                         _logger.LogInformation("SendGridWebhook|SendMessageFreeDdNotificationProcessAsync");
 
                         // Send a message to FreeDdNotificationQueue
-                        await _queueMessageService.SendMessageFreeDdNotificationEmailProcessAsync(item);
+                        await _queueMessageService.SendMessageFreeDdNotificationEmailProcessAsync(item.ToFreeDdNotificationWebhookModel());
                     }
                     //this is Marketing Funnel email broadcast
                     else if (item.CampaignBroadcastKey > 0)
@@ -64,7 +64,7 @@ namespace MarketingWebHooks.Functions.HttpTriggers
                         _logger.LogInformation("SendGridWebhook|SendMessageCampaignBroadcastProcessAsync");
 
                         // Send a message to CampaignBroadcastQueue
-                        await _queueMessageService.SendMessageCampaignBroadcastEmailBaseProcessAsync(item.ToCampaignBroadcastBase());
+                        await _queueMessageService.SendMessageCampaignBroadcastEmailBaseProcessAsync(item.ToCampaignBroadcastEmailStatus());
                     }
                 }                
             }

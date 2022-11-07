@@ -1,4 +1,4 @@
-using MarketingWebHooks.DataAcesLayer;
+using MarketingWebHooks.DataAcesLayer.Interfaces;
 using MarketingWebHooks.Entities;
 using MarketingWebHooks.Services;
 using Microsoft.Azure.Functions.Worker;
@@ -25,7 +25,7 @@ namespace MarketingWebHooks.Functions.Processors
 
             try
             {
-                CampaignBroadcastBase campaignBroadcast = JsonSerializer.Deserialize<CampaignBroadcastBase>(myQueueItem);
+                CampaignBroadcastEmailStatus campaignBroadcast = JsonSerializer.Deserialize<CampaignBroadcastEmailStatus>(myQueueItem);
 
                 _logger.LogInformation($"CampaignBroadcastEmailBaseStatusProcessor: the queue message was Deserialized");
 

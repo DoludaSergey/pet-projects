@@ -1,6 +1,6 @@
 ﻿using MarketingWebHooks.Entities;
 
-namespace MarketingWebHooks.DataAcesLayer
+namespace MarketingWebHooks.DataAcesLayer.Interfaces
 {
     public interface IRepository<T> where T : IEntity
     {
@@ -11,5 +11,7 @@ namespace MarketingWebHooks.DataAcesLayer
         Task<T> UpdateAsync(T entity);
 
         Task<T?> RemoveAsync(string id);
+
+        Task BulkUpdateAsync(List<T> items);
     }
 }
