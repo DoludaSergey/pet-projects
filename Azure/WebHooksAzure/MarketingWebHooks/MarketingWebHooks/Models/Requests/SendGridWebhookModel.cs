@@ -40,6 +40,8 @@ namespace MarketingWebHooks.Models.Requests
         [JsonPropertyName("timestamp")]
         public uint TimeStamp { get; set; }
 
+        public DateTime CreationDate { get; set; }
+
         public CampaignBroadcastEmailStatus ToCampaignBroadcastEmailStatus()
         {
             var campaignBroadcast = new CampaignBroadcastEmailStatus()
@@ -48,7 +50,8 @@ namespace MarketingWebHooks.Models.Requests
                 CampaignBroadcastKey = CampaignBroadcastKey,
                 Status = Status,
                 MessageId = MessageId,
-                TimeStamp = TimeStamp
+                TimeStamp = TimeStamp,
+                CreationDate = CreationDate,
             };
 
             return campaignBroadcast;
@@ -62,6 +65,7 @@ namespace MarketingWebHooks.Models.Requests
                 Status = Status,
                 MessageId = MessageId,
                 TimeStamp = TimeStamp,
+                CreationDate = CreationDate,
                 FreeDdNotificationGroupKey = FreeDdNotificationGroupKey,
                 IsFreeDdNotificationForExpiringEvent = IsFreeDdNotificationForExpiringEvent
             };

@@ -1,14 +1,10 @@
-using System.Collections.Generic;
-using System.Net;
-using System.Text.Json;
-using Azure.Core;
-using MarketingWebHooks.Enums;
 using MarketingWebHooks.Models.Requests;
 using MarketingWebHooks.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
-using Newtonsoft.Json.Linq;
+using System.Net;
+using System.Text.Json;
 
 namespace MarketingWebHooks.Functions.HttpTriggers
 {
@@ -26,6 +22,8 @@ namespace MarketingWebHooks.Functions.HttpTriggers
         [Function("SendGridWebhook")]
         public async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get", "post")] HttpRequestData requestData)
         {
+            var executeTime = DateTime.UtcNow;
+            
             _logger.LogInformation("SendGridWebhook|Start");
 
             HttpResponseData response;
@@ -50,6 +48,8 @@ namespace MarketingWebHooks.Functions.HttpTriggers
 
                 foreach (var item in request)
                 {
+                    item.CreationDate = executeTime;
+
                     //this is Free DD email notification
                     if (item.FreeDdNotificationGroupKey.HasValue)
                     {

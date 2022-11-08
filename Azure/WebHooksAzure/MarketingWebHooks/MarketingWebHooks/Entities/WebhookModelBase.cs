@@ -18,5 +18,7 @@ namespace MarketingWebHooks.Entities
         public bool IsLocked { get; set; }
 
         public DateTime LockDate { get; set; }
+
+        public DateTime CreationDate { get; set; }
     }
 }
