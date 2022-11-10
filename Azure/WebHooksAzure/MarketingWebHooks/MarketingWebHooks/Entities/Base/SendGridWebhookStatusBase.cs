@@ -3,7 +3,7 @@ using System.Text.Json.Serialization;
 
 namespace MarketingWebHooks.Entities
 {
-    public abstract class WebhookModelBase : IEntity
+    public abstract class SendGridWebhookStatusBase : IEntity
     {
         [JsonProperty("id")]
         [JsonPropertyName("id")]

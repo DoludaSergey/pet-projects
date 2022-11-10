@@ -8,31 +8,31 @@ using Microsoft.Extensions.Logging;
 
 namespace MarketingWebHooks.Functions.HttpTriggers
 {
-    public class GetCampaignBroadcastEmailStatuses
+    public class GetFreeDdEmailNotificationStatuses
     {
         private readonly ILogger _logger;
-        private readonly ICampaignBroadcastEmailStatusRepository _campaignBroadcastRepository;
+        private readonly IFreeDdEmailNotificationRepository _freeDdElailNotificationRepository;
         private readonly IHttpHelper _httpHelper;
 
-        public GetCampaignBroadcastEmailStatuses(ILoggerFactory loggerFactory, ICampaignBroadcastEmailStatusRepository campaignBroadcastRepository, IHttpHelper httpHelper)
+        public GetFreeDdEmailNotificationStatuses(ILoggerFactory loggerFactory, IFreeDdEmailNotificationRepository repository, IHttpHelper httpHelper)
         {
-            _logger = loggerFactory.CreateLogger<GetCampaignBroadcastEmailStatuses>();
-            _campaignBroadcastRepository = campaignBroadcastRepository;
+            _logger = loggerFactory.CreateLogger<GetFreeDdEmailNotificationStatuses>();
+            _freeDdElailNotificationRepository = repository;
             _httpHelper = httpHelper;
         }
 
-        [Function("GetCampaignBroadcastEmailStatuses")]
+        [Function("GetFreeDdEmailNotificationStatuses")]
         public async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData requestData)
         {
-            _logger.LogInformation("GetEmailStatuses|Start");
+            _logger.LogInformation("GetFreeDdEmailNotificationStatuses|Start");
 
             try
             {
-                var emailStatuses = await _campaignBroadcastRepository.GetEmailStatuses();
+                var emailStatuses = await _freeDdElailNotificationRepository.GetWebhookStatuses();
 
                 if (emailStatuses is null)
                 {
-                    emailStatuses = new List<CampaignBroadcastEmailStatus>();
+                    emailStatuses = new List<FreeDdEmailNotificationStatus>();
 
                     return await _httpHelper.CreateFailedHttpResponseAsync(requestData, emailStatuses);
                 }
@@ -44,9 +44,9 @@ namespace MarketingWebHooks.Functions.HttpTriggers
                     status.LockDate = lockDate;
                 }
 
-                await _campaignBroadcastRepository.BulkUpdateAsync(emailStatuses);
+                await _freeDdElailNotificationRepository.BulkUpdateAsync(emailStatuses);
 
-                _logger.LogInformation("GetEmailStatuses|Finish");
+                _logger.LogInformation("GetFreeDdEmailNotificationStatuses|Finish");
 
                 return await _httpHelper.CreateFailedHttpResponseAsync(requestData, emailStatuses);
 
@@ -55,7 +55,7 @@ namespace MarketingWebHooks.Functions.HttpTriggers
             {
                 _logger.LogError(e.Message);
 
-                _logger.LogInformation("GetEmailStatuses|Finish");
+                _logger.LogInformation("GetFreeDdEmailNotificationStatuses|Finish");
 
                 var responseModel = new BaseResponseModel(e.Message, false);
 

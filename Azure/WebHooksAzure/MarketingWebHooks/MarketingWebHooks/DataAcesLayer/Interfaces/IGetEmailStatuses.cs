@@ -2,8 +2,8 @@
 
 namespace MarketingWebHooks.DataAcesLayer.Interfaces
 {
-    public interface IGetEmailStatuses<T> where T : IEntity
+    public interface IGetWebhookStatuses<T> where T : IEntity
     {
-        Task<List<T>> GetEmailStatuses(int countToProcess = 100);
+        Task<List<T>> GetWebhookStatuses(int countToProcess = 100);
     }
 }

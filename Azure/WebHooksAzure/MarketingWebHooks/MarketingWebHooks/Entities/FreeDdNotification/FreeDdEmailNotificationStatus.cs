@@ -1,6 +1,6 @@
 ﻿namespace MarketingWebHooks.Entities
 {
-    public sealed class FreeDdEmailNotificationStatus : WebhookModelBase, IEntity
+    public class FreeDdEmailNotificationStatus : SendGridWebhookStatusBase, IEntity
     {
         public Guid? FreeDdNotificationGroupKey { get; set; }
 

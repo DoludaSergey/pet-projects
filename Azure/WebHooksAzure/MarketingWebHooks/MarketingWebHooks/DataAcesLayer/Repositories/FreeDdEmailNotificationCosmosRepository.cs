@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 namespace MarketingWebHooks.DataAcesLayer.Repositories
 {
     public class FreeDdEmailNotificationCosmosRepository :
-        BaseCosmosRepositoryWithGetEmaleStatuses<FreeDdEmailNotificationStatus>, IFreeDdEmailNotificationRepository
+        BaseCosmosRepositoryWithGetWebhookStatuses<FreeDdEmailNotificationStatus>, IFreeDdEmailNotificationRepository
     {
         public FreeDdEmailNotificationCosmosRepository(ILoggerFactory loggerFactory, ICosmosRetryPolicy retryPolicy,
                                                   CosmosSettings cosmosSettings, CosmosClient cosmosClient)

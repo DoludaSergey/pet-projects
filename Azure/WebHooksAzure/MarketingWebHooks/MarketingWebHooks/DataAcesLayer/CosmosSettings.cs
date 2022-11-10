@@ -12,8 +12,12 @@
 
         public string CampaignBroadcastEmailStatusContainerName { get; set; }
 
+        public string CampaignBroadcastSmsStatusContainerName { get; set; }
+
         public string CampaignBroadcastBaseContainerName { get; set; }
 
         public string FreeDdEmailNotificationStatusContainerName { get; set; }
+
+        public string FreeDdSmsNotificationStatusContainerName { get; set; }
     }
 }

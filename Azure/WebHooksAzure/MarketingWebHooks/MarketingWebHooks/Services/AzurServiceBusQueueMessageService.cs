@@ -1,5 +1,7 @@
 ﻿using Azure.Messaging.ServiceBus;
 using MarketingWebHooks.Entities;
+using MarketingWebHooks.Entities.CampaignBroadcast;
+using MarketingWebHooks.Entities.FreeDdNotification;
 using MarketingWebHooks.ResiliencePolicy;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
@@ -15,6 +17,8 @@ namespace MarketingWebHooks.Services
         public const string SERVER_BUS_QUEUE_CAMPAIGN_BROADCAST_EMAIL_STATUS_PROCESS = "campaign-broadcast-email-status-process";
         public const string SERVER_BUS_QUEUE_CAMPAIGN_BROADCAST_EMAIL_BASE_STATUS_PROCESS = "campaign-broadcast-email-base-status-process";
         public const string SERVER_BUS_QUEUE_FREE_DD_NOTIFICATION_EMAIL_STATUS_PROCESS = "free-dd-notification-email-status-process";
+        public const string SERVER_BUS_QUEUE_CAMPAIGN_BROADCAST_SMS_STATUS_PROCESS = "campaign-broadcast-sms-status-process";
+        public const string SERVER_BUS_QUEUE_FREE_DD_NOTIFICATION_SMS_STATUS_PROCESS = "free-dd-notification-sms-status-process";
 
 
         public AzurServiceBusQueueMessageService(ILoggerFactory loggerFactory, IRetryPolicy retryPolicy)
@@ -47,6 +51,16 @@ namespace MarketingWebHooks.Services
         public async Task SendMessageFreeDdNotificationEmailProcessAsync(FreeDdEmailNotificationStatus data)
         {
             await this.SendMessageAsync(data, SERVER_BUS_QUEUE_FREE_DD_NOTIFICATION_EMAIL_STATUS_PROCESS);
+        }
+
+        public async Task SendMessageCampaignBroadcastSmsProcessAsync(CampaignBroadcastSmsStatus data)
+        {
+            await this.SendMessageAsync(data, SERVER_BUS_QUEUE_CAMPAIGN_BROADCAST_SMS_STATUS_PROCESS);
+        }
+
+        public async Task SendMessageFreeDdNotificationSmsProcessAsync(FreeDdSmsNotificationStatus data)
+        {
+            await this.SendMessageAsync(data, SERVER_BUS_QUEUE_FREE_DD_NOTIFICATION_SMS_STATUS_PROCESS);
         }
 
         public async Task SendMessageAsync<T>(T data, string senderName)
