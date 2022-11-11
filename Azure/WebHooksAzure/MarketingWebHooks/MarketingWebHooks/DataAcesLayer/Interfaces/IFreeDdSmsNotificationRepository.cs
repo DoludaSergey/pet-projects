@@ -3,7 +3,7 @@
 namespace MarketingWebHooks.DataAcesLayer.Interfaces
 {
     public interface IFreeDdSmsNotificationRepository : IRepository<FreeDdSmsNotificationStatus>
-                                                    , IGetWebhookStatuses<FreeDdSmsNotificationStatus>
+                                                    , IGetItemsToProcess<FreeDdSmsNotificationStatus>
     {
 
     }

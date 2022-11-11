@@ -28,7 +28,7 @@ namespace MarketingWebHooks.Functions.HttpTriggers
 
             try
             {
-                var emailStatuses = await _freeDdNotificationRepository.GetWebhookStatuses();
+                var emailStatuses = await _freeDdNotificationRepository.GetItemsToProcess();
 
                 if (emailStatuses is null)
                 {

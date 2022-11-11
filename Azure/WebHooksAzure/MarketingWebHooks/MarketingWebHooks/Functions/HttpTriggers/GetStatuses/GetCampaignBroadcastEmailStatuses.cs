@@ -28,7 +28,7 @@ namespace MarketingWebHooks.Functions.HttpTriggers
 
             try
             {
-                var emailStatuses = await _campaignBroadcastRepository.GetWebhookStatuses();
+                var emailStatuses = await _campaignBroadcastRepository.GetItemsToProcess();
 
                 if (emailStatuses is null)
                 {

@@ -1,24 +1,13 @@
-﻿using Newtonsoft.Json;
-using System.Text.Json.Serialization;
+﻿using MarketingWebHooks.Entities.Base;
 
 namespace MarketingWebHooks.Entities
 {
-    public abstract class SendGridWebhookStatusBase : IEntity
+    public abstract class SendGridWebhookStatusBase : EntityBaseWithLock
     {
-        [JsonProperty("id")]
-        [JsonPropertyName("id")]
-        public string Id { get; set; }
-
         public string? MessageId { get; set; }
 
         public string? Status { get; set; }
 
-        public uint TimeStamp { get; set; }
-
-        public bool IsLocked { get; set; }
-
-        public DateTime LockDate { get; set; }
-
-        public DateTime CreationDate { get; set; }
+        public uint TimeStamp { get; set; }        
     }
 }

@@ -1,5 +1,5 @@
 using MarketingWebHooks.DataAcesLayer.Interfaces;
-using MarketingWebHooks.Entities.CampaignBroadcast;
+using MarketingWebHooks.Entities.FreeDdNotification;
 using MarketingWebHooks.Helpers;
 using MarketingWebHooks.Models.Responses;
 using Microsoft.Azure.Functions.Worker;
@@ -8,31 +8,31 @@ using Microsoft.Extensions.Logging;
 
 namespace MarketingWebHooks.Functions.HttpTriggers
 {
-    public class GetCampaignBroadcastSmsStatuses
+    public class GetInvalidPhoneNumbers
     {
         private readonly ILogger _logger;
-        private readonly ICampaignBroadcastSmsStatusRepository _campaignBroadcastRepository;
+        private readonly IInvalidPhoneNumberRepository _invalidPhoneRepository;
         private readonly IHttpHelper _httpHelper;
 
-        public GetCampaignBroadcastSmsStatuses(ILoggerFactory loggerFactory, ICampaignBroadcastSmsStatusRepository campaignBroadcastRepository, IHttpHelper httpHelper)
+        public GetInvalidPhoneNumbers(ILoggerFactory loggerFactory, IInvalidPhoneNumberRepository repository, IHttpHelper httpHelper)
         {
-            _logger = loggerFactory.CreateLogger<GetCampaignBroadcastSmsStatuses>();
-            _campaignBroadcastRepository = campaignBroadcastRepository;
+            _logger = loggerFactory.CreateLogger<GetInvalidPhoneNumbers>();
+            _invalidPhoneRepository = repository;
             _httpHelper = httpHelper;
         }
 
-        [Function("GetCampaignBroadcastSmsStatuses")]
+        [Function("GetInvalidPhoneNumbers")]
         public async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData requestData)
         {
-            _logger.LogInformation("GetCampaignBroadcastSmsStatuses|Start");
+            _logger.LogInformation("GetInvalidPhoneNumbers|Start");
 
             try
             {
-                var emailStatuses = await _campaignBroadcastRepository.GetItemsToProcess();
+                var emailStatuses = await _invalidPhoneRepository.GetItemsToProcess();
 
                 if (emailStatuses is null)
                 {
-                    emailStatuses = new List<CampaignBroadcastSmsStatus>();
+                    emailStatuses = new ();
 
                     return await _httpHelper.CreateFailedHttpResponseAsync(requestData, emailStatuses);
                 }
@@ -44,9 +44,9 @@ namespace MarketingWebHooks.Functions.HttpTriggers
                     status.LockDate = lockDate;
                 }
 
-                await _campaignBroadcastRepository.BulkUpdateAsync(emailStatuses);
+                await _invalidPhoneRepository.BulkUpdateAsync(emailStatuses);
 
-                _logger.LogInformation("GetCampaignBroadcastSmsStatuses|Finish");
+                _logger.LogInformation("GetInvalidPhoneNumbers|Finish");
 
                 return await _httpHelper.CreateFailedHttpResponseAsync(requestData, emailStatuses);
 
@@ -55,7 +55,7 @@ namespace MarketingWebHooks.Functions.HttpTriggers
             {
                 _logger.LogError(e.Message);
 
-                _logger.LogInformation("GetCampaignBroadcastSmsStatuses|Finish");
+                _logger.LogInformation("GetInvalidPhoneNumbers|Finish");
 
                 var responseModel = new BaseResponseModel(e.Message, false);
 

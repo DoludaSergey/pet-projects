@@ -1,14 +1,9 @@
-﻿using Newtonsoft.Json;
-using System.Text.Json.Serialization;
+﻿using MarketingWebHooks.Entities.Base;
 
 namespace MarketingWebHooks.Entities
 {
-    public class InvalidPhoneNumber : IEntity
+    public class InvalidPhoneNumber : EntityBaseWithLock
     {
-        [JsonProperty("id")]
-        [JsonPropertyName("id")]
-        public string Id { get; set; }
-
         public string? ResourceSid { get; set; }
 
         public static InvalidPhoneNumber CreateInvalidPhoneNumber(string resourceSid)

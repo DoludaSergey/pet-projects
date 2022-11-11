@@ -1,22 +1,11 @@
-﻿using Newtonsoft.Json;
-using System.Text.Json.Serialization;
+﻿using MarketingWebHooks.Entities.Base;
 
 namespace MarketingWebHooks.Entities
 {
-    public class TwilioWebhookStatuslBase : IEntity
+    public class TwilioWebhookStatuslBase : EntityBaseWithLock
     {
-        [JsonProperty("id")]
-        [JsonPropertyName("id")]
-        public string Id { get; set; }
-
         public string SmsSid { get; set; }
 
-        public string SmsStatus { get; set; }
-
-        public bool IsLocked { get; set; }
-
-        public DateTime LockDate { get; set; }
-
-        public DateTime CreationDate { get; set; }
+        public string SmsStatus { get; set; }        
     }
 }
