@@ -38,6 +38,7 @@ namespace MarketingWebHooks.DataAcesLayer
             services.AddScoped<ICampaignBroadcastSmsStatusRepository, CampaignBroadcastSmsStatusCosmosRepository>();
             services.AddScoped<IFreeDdEmailNotificationRepository, FreeDdEmailNotificationCosmosRepository>();
             services.AddScoped<IFreeDdSmsNotificationRepository, FreeDdSmsNotificationCosmosRepository>();
+            services.AddScoped<IInvalidPhoneNumberRepository, InvalidPhoneNumberCosmosRepository>();
 
             return services;
         }

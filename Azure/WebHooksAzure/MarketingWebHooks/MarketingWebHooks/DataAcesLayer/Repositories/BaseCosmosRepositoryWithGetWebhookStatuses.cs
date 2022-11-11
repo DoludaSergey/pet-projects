@@ -1,6 +1,7 @@
 ﻿using MarketingWebHooks.DataAcesLayer.Interfaces;
 using MarketingWebHooks.Entities;
 using MarketingWebHooks.Helpers;
+using MarketingWebHooks.ResiliencePolicy;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
 
@@ -9,7 +10,8 @@ namespace MarketingWebHooks.DataAcesLayer.Repositories
     public abstract class BaseCosmosRepositoryWithGetWebhookStatuses<T> : BaseCosmosRepository<T>,
                                  IRepository<T>, IGetWebhookStatuses<T> where T : class, IEntity
     {
-        public async Task<List<T>> GetWebhookStatuses(int countToProcess = 100)
+
+       public async Task<List<T>> GetWebhookStatuses(int countToProcess = 100)
         {
             try
             {

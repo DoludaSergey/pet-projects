@@ -19,6 +19,7 @@ namespace MarketingWebHooks.Services
         public const string SERVER_BUS_QUEUE_FREE_DD_NOTIFICATION_EMAIL_STATUS_PROCESS = "free-dd-notification-email-status-process";
         public const string SERVER_BUS_QUEUE_CAMPAIGN_BROADCAST_SMS_STATUS_PROCESS = "campaign-broadcast-sms-status-process";
         public const string SERVER_BUS_QUEUE_FREE_DD_NOTIFICATION_SMS_STATUS_PROCESS = "free-dd-notification-sms-status-process";
+        public const string SERVER_BUS_QUEUE_INVALID_PHONE_NUMBERS_PROCESS = "invalid-phone-numbers-process";
 
 
         public AzurServiceBusQueueMessageService(ILoggerFactory loggerFactory, IRetryPolicy retryPolicy)
@@ -61,6 +62,11 @@ namespace MarketingWebHooks.Services
         public async Task SendMessageFreeDdNotificationSmsProcessAsync(FreeDdSmsNotificationStatus data)
         {
             await this.SendMessageAsync(data, SERVER_BUS_QUEUE_FREE_DD_NOTIFICATION_SMS_STATUS_PROCESS);
+        }
+
+        public async Task SendMessageInvalidPhoneNumberProcessAsync(InvalidPhoneNumber data)
+        {
+            await this.SendMessageAsync(data, SERVER_BUS_QUEUE_INVALID_PHONE_NUMBERS_PROCESS);
         }
 
         public async Task SendMessageAsync<T>(T data, string senderName)
