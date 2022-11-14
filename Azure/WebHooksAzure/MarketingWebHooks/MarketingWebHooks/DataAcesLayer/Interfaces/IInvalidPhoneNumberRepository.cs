@@ -1,9 +1,10 @@
-﻿using MarketingWebHooks.Entities;
+﻿using MarketingWebHooks.DataAcesLayer.Repositories;
+using MarketingWebHooks.Entities;
 
 namespace MarketingWebHooks.DataAcesLayer.Interfaces
 {
-    public interface IInvalidPhoneNumberRepository : IRepository<InvalidPhoneNumber>
-                                                    , IGetItemsToProcess<InvalidPhoneNumber>
+    public interface IInvalidPhoneNumberRepository : IBaseCosmosRepositoryWithGetWebhookStatuses<InvalidPhoneNumber>,
+        IRepository<InvalidPhoneNumber>, IGetItemsToProcess<InvalidPhoneNumber>
     {
 
     }

@@ -1,5 +1,4 @@
-﻿using MarketingWebHooks.DataAcesLayer.Interfaces;
-using MarketingWebHooks.Entities.Base;
+﻿using MarketingWebHooks.Entities.Base;
 using MarketingWebHooks.Helpers;
 using Microsoft.Azure.Cosmos;
 using Microsoft.Extensions.Logging;
@@ -7,15 +6,15 @@ using Microsoft.Extensions.Logging;
 namespace MarketingWebHooks.DataAcesLayer.Repositories
 {
     public abstract class BaseCosmosRepositoryWithGetWebhookStatuses<T> : BaseCosmosRepository<T>,
-                                 IRepository<T>, IGetItemsToProcess<T> where T : class, IEntityBaseWithLock
+                                 IBaseCosmosRepositoryWithGetWebhookStatuses<T> where T : class, IEntityBaseWithLock
     {
 
-       public async Task<List<T>> GetItemsToProcess(int countToProcess = 100)
+        public async Task<List<T>> GetItemsToProcess(int countToProcess = 100)
         {
             try
             {
                 var deltaTime = DateTime.UtcNow
-                    .AddHours(EnvironmentVariableHelper.GetEnvironmentVariableOrDefaulf("REBUILD_THUMB_TIME_DELTA_IN_HOURS", 10));
+                    .AddHours(EnvironmentVariableHelper.GetEnvironmentVariableOrDefaulf("LOCK_DATA_TIME_DELTA_IN_HOURS", 10));
 
                 var queryString = $"SELECT TOP {countToProcess} * FROM {ContainerName} c WHERE c.IsLocked = false AND c.LockDate < \"{deltaTime}\"";
 
@@ -44,6 +43,17 @@ namespace MarketingWebHooks.DataAcesLayer.Repositories
             }
 
             return null;
+        }
+
+        public void SetLockForProcessItems(List<T> items)
+        {
+            var lockDate = DateTime.UtcNow;
+
+            foreach (var item in items)
+            {
+                item.IsLocked = true;
+                item.LockDate = lockDate;
+            }
         }
     }
 }

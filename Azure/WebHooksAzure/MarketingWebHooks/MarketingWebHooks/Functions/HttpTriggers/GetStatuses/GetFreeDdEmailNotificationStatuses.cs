@@ -1,7 +1,7 @@
 using MarketingWebHooks.DataAcesLayer.Interfaces;
 using MarketingWebHooks.Entities;
 using MarketingWebHooks.Helpers;
-using MarketingWebHooks.Models.Responses;
+using MarketingWebHooks.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
@@ -24,43 +24,23 @@ namespace MarketingWebHooks.Functions.HttpTriggers
         [Function("GetFreeDdEmailNotificationStatuses")]
         public async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData requestData)
         {
-            _logger.LogInformation("GetFreeDdEmailNotificationStatuses|Start");
+            _logger.LogInformation("GetFreeDdEmailNotificationStatuses|Start GetItemsWithLockProcessing");
 
-            try
+            List<FreeDdEmailNotificationStatus>? itemsToProcess = await ItemsLockProcessor
+                                                .GetItemsWithLockProcessing(_freeDdElailNotificationRepository, _logger);
+
+            _logger.LogInformation("GetFreeDdEmailNotificationStatuses|Finish GetItemsWithLockProcessing");
+
+            if (itemsToProcess is null)
             {
-                var emailStatuses = await _freeDdElailNotificationRepository.GetItemsToProcess();
+                _logger.LogInformation("GetFreeDdEmailNotificationStatuses|itemsToProcess is null");
 
-                if (emailStatuses is null)
-                {
-                    emailStatuses = new List<FreeDdEmailNotificationStatus>();
+                itemsToProcess = new();
 
-                    return await _httpHelper.CreateFailedHttpResponseAsync(requestData, emailStatuses);
-                }
-                var lockDate = DateTime.UtcNow;
-
-                foreach (var status in emailStatuses)
-                {
-                    status.IsLocked = true;
-                    status.LockDate = lockDate;
-                }
-
-                await _freeDdElailNotificationRepository.BulkUpdateAsync(emailStatuses);
-
-                _logger.LogInformation("GetFreeDdEmailNotificationStatuses|Finish");
-
-                return await _httpHelper.CreateFailedHttpResponseAsync(requestData, emailStatuses);
-
+                return await _httpHelper.CreateFailedHttpResponseAsync(requestData, itemsToProcess);
             }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
 
-                _logger.LogInformation("GetFreeDdEmailNotificationStatuses|Finish");
-
-                var responseModel = new BaseResponseModel(e.Message, false);
-
-                return await _httpHelper.CreateFailedHttpResponseAsync(requestData, responseModel);
-            }
+            return await _httpHelper.CreateSuccessfulHttpResponseAsync(requestData, itemsToProcess);
         }
     }
 }

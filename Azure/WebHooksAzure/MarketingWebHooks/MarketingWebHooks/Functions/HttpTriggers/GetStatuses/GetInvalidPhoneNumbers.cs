@@ -1,7 +1,7 @@
 using MarketingWebHooks.DataAcesLayer.Interfaces;
-using MarketingWebHooks.Entities.FreeDdNotification;
+using MarketingWebHooks.Entities;
 using MarketingWebHooks.Helpers;
-using MarketingWebHooks.Models.Responses;
+using MarketingWebHooks.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
@@ -24,43 +24,23 @@ namespace MarketingWebHooks.Functions.HttpTriggers
         [Function("GetInvalidPhoneNumbers")]
         public async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData requestData)
         {
-            _logger.LogInformation("GetInvalidPhoneNumbers|Start");
+            _logger.LogInformation("GetInvalidPhoneNumbers|Start GetItemsWithLockProcessing");
 
-            try
+            List<InvalidPhoneNumber>? itemsToProcess = await ItemsLockProcessor
+                                                .GetItemsWithLockProcessing(_invalidPhoneRepository, _logger);
+
+            _logger.LogInformation("GetInvalidPhoneNumbers|Finish GetItemsWithLockProcessing");
+
+            if (itemsToProcess is null)
             {
-                var emailStatuses = await _invalidPhoneRepository.GetItemsToProcess();
+                _logger.LogInformation("GetInvalidPhoneNumbers|itemsToProcess is null");
 
-                if (emailStatuses is null)
-                {
-                    emailStatuses = new ();
+                itemsToProcess = new();
 
-                    return await _httpHelper.CreateFailedHttpResponseAsync(requestData, emailStatuses);
-                }
-                var lockDate = DateTime.UtcNow;
-
-                foreach (var status in emailStatuses)
-                {
-                    status.IsLocked = true;
-                    status.LockDate = lockDate;
-                }
-
-                await _invalidPhoneRepository.BulkUpdateAsync(emailStatuses);
-
-                _logger.LogInformation("GetInvalidPhoneNumbers|Finish");
-
-                return await _httpHelper.CreateFailedHttpResponseAsync(requestData, emailStatuses);
-
+                return await _httpHelper.CreateFailedHttpResponseAsync(requestData, itemsToProcess);
             }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
 
-                _logger.LogInformation("GetInvalidPhoneNumbers|Finish");
-
-                var responseModel = new BaseResponseModel(e.Message, false);
-
-                return await _httpHelper.CreateFailedHttpResponseAsync(requestData, responseModel);
-            }
+            return await _httpHelper.CreateSuccessfulHttpResponseAsync(requestData, itemsToProcess);
         }
     }
 }

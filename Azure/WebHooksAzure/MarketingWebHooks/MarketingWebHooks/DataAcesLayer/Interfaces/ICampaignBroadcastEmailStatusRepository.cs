@@ -1,9 +1,10 @@
-﻿using MarketingWebHooks.Entities;
+﻿using MarketingWebHooks.DataAcesLayer.Repositories;
+using MarketingWebHooks.Entities;
 
 namespace MarketingWebHooks.DataAcesLayer.Interfaces
 {
-    public interface ICampaignBroadcastEmailStatusRepository : IRepository<CampaignBroadcastEmailStatus>,
-        IGetItemsToProcess<CampaignBroadcastEmailStatus>
+    public interface ICampaignBroadcastEmailStatusRepository : IBaseCosmosRepositoryWithGetWebhookStatuses<CampaignBroadcastEmailStatus>,
+        IRepository<CampaignBroadcastEmailStatus>, IGetItemsToProcess<CampaignBroadcastEmailStatus>
     {
         
     }

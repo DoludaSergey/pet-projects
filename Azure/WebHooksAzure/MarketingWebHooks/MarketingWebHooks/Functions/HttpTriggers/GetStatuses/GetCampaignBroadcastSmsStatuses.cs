@@ -1,7 +1,7 @@
 using MarketingWebHooks.DataAcesLayer.Interfaces;
 using MarketingWebHooks.Entities.CampaignBroadcast;
 using MarketingWebHooks.Helpers;
-using MarketingWebHooks.Models.Responses;
+using MarketingWebHooks.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
@@ -24,43 +24,23 @@ namespace MarketingWebHooks.Functions.HttpTriggers
         [Function("GetCampaignBroadcastSmsStatuses")]
         public async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData requestData)
         {
-            _logger.LogInformation("GetCampaignBroadcastSmsStatuses|Start");
+            _logger.LogInformation("GetCampaignBroadcastSmsStatuses|Start GetItemsWithLockProcessing");
 
-            try
+            List<CampaignBroadcastSmsStatus>? itemsToProcess = await ItemsLockProcessor
+                                                .GetItemsWithLockProcessing(_campaignBroadcastRepository, _logger);
+
+            _logger.LogInformation("GetCampaignBroadcastSmsStatuses|Finish GetItemsWithLockProcessing");
+
+            if (itemsToProcess is null)
             {
-                var emailStatuses = await _campaignBroadcastRepository.GetItemsToProcess();
+                _logger.LogInformation("GetCampaignBroadcastSmsStatuses|itemsToProcess is null");
 
-                if (emailStatuses is null)
-                {
-                    emailStatuses = new List<CampaignBroadcastSmsStatus>();
+                itemsToProcess = new();
 
-                    return await _httpHelper.CreateFailedHttpResponseAsync(requestData, emailStatuses);
-                }
-                var lockDate = DateTime.UtcNow;
-
-                foreach (var status in emailStatuses)
-                {
-                    status.IsLocked = true;
-                    status.LockDate = lockDate;
-                }
-
-                await _campaignBroadcastRepository.BulkUpdateAsync(emailStatuses);
-
-                _logger.LogInformation("GetCampaignBroadcastSmsStatuses|Finish");
-
-                return await _httpHelper.CreateFailedHttpResponseAsync(requestData, emailStatuses);
-
+                return await _httpHelper.CreateFailedHttpResponseAsync(requestData, itemsToProcess);
             }
-            catch (Exception e)
-            {
-                _logger.LogError(e.Message);
 
-                _logger.LogInformation("GetCampaignBroadcastSmsStatuses|Finish");
-
-                var responseModel = new BaseResponseModel(e.Message, false);
-
-                return await _httpHelper.CreateFailedHttpResponseAsync(requestData, responseModel);
-            }
+            return await _httpHelper.CreateSuccessfulHttpResponseAsync(requestData, itemsToProcess);
         }
     }
 }

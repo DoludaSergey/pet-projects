@@ -1,9 +1,10 @@
-﻿using MarketingWebHooks.Entities;
+﻿using MarketingWebHooks.DataAcesLayer.Repositories;
+using MarketingWebHooks.Entities;
 
 namespace MarketingWebHooks.DataAcesLayer.Interfaces
 {
-    public interface IFreeDdEmailNotificationRepository : IRepository<FreeDdEmailNotificationStatus>
-                                                    , IGetItemsToProcess<FreeDdEmailNotificationStatus>
+    public interface IFreeDdEmailNotificationRepository : IBaseCosmosRepositoryWithGetWebhookStatuses<FreeDdEmailNotificationStatus>,
+        IRepository<FreeDdEmailNotificationStatus>, IGetItemsToProcess<FreeDdEmailNotificationStatus>
     {
 
     }
