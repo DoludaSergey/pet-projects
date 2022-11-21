@@ -17,6 +17,7 @@ namespace MarketingWebHooks.Services
         public const string SERVER_BUS_QUEUE_CAMPAIGN_BROADCAST_EMAIL_STATUS_PROCESS = "campaign-broadcast-email-status-process";
         public const string SERVER_BUS_QUEUE_CAMPAIGN_BROADCAST_EMAIL_BASE_STATUS_PROCESS = "campaign-broadcast-email-base-status-process";
         public const string SERVER_BUS_QUEUE_FREE_DD_NOTIFICATION_EMAIL_STATUS_PROCESS = "free-dd-notification-email-status-process";
+        public const string SERVER_BUS_QUEUE_FREE_DD_NOTIFICATION_EMAIL_BASE_STATUS_PROCESS = "free-dd-notification-email-base-status-process";
         public const string SERVER_BUS_QUEUE_CAMPAIGN_BROADCAST_SMS_STATUS_PROCESS = "campaign-broadcast-sms-status-process";
         public const string SERVER_BUS_QUEUE_FREE_DD_NOTIFICATION_SMS_STATUS_PROCESS = "free-dd-notification-sms-status-process";
         public const string SERVER_BUS_QUEUE_INVALID_PHONE_NUMBERS_PROCESS = "invalid-phone-numbers-process";
@@ -49,7 +50,17 @@ namespace MarketingWebHooks.Services
             await this.SendMessageAsync(data, SERVER_BUS_QUEUE_CAMPAIGN_BROADCAST_EMAIL_BASE_STATUS_PROCESS);
         }
 
+        public async Task SendMessageCampaignBroadcastEmailExtendedProcessAsync(CampaignBroadcastEmailStatusExtended data)
+        {
+            await this.SendMessageAsync(data, SERVER_BUS_QUEUE_CAMPAIGN_BROADCAST_EMAIL_STATUS_PROCESS);
+        }
+
         public async Task SendMessageFreeDdNotificationEmailProcessAsync(FreeDdEmailNotificationStatus data)
+        {
+            await this.SendMessageAsync(data, SERVER_BUS_QUEUE_FREE_DD_NOTIFICATION_EMAIL_BASE_STATUS_PROCESS);
+        }
+
+        public async Task SendMessageFreeDdNotificationEmailExtendedProcessAsync(FreeDdEmailNotificationStatusExtended data)
         {
             await this.SendMessageAsync(data, SERVER_BUS_QUEUE_FREE_DD_NOTIFICATION_EMAIL_STATUS_PROCESS);
         }

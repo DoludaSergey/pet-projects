@@ -19,7 +19,7 @@ namespace MarketingWebHooks.Functions.Processors
         }
 
         [Function("FreeDdNotificationEmailStatusProcessor")]
-        public async Task Run([ServiceBusTrigger(AzurServiceBusQueueMessageService.SERVER_BUS_QUEUE_FREE_DD_NOTIFICATION_EMAIL_STATUS_PROCESS, Connection = "SERVER_BUS_QUEUE_CON_STR")] string myQueueItem)
+        public async Task Run([ServiceBusTrigger(AzurServiceBusQueueMessageService.SERVER_BUS_QUEUE_FREE_DD_NOTIFICATION_EMAIL_BASE_STATUS_PROCESS, Connection = "SERVER_BUS_QUEUE_CON_STR")] string myQueueItem)
         {
             _logger.LogInformation($"FreeDdNotificationEmailStatusProcessor: Started processing message: {myQueueItem}");
 

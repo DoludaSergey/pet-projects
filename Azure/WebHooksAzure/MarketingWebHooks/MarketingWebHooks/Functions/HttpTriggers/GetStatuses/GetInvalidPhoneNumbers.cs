@@ -26,19 +26,10 @@ namespace MarketingWebHooks.Functions.HttpTriggers
         {
             _logger.LogInformation("GetInvalidPhoneNumbers|Start GetItemsWithLockProcessing");
 
-            List<InvalidPhoneNumber>? itemsToProcess = await ItemsLockProcessor
+            List<InvalidPhoneNumber> itemsToProcess = await ItemsLockProcessor
                                                 .GetItemsWithLockProcessing(_invalidPhoneRepository, _logger);
 
             _logger.LogInformation("GetInvalidPhoneNumbers|Finish GetItemsWithLockProcessing");
-
-            if (itemsToProcess is null)
-            {
-                _logger.LogInformation("GetInvalidPhoneNumbers|itemsToProcess is null");
-
-                itemsToProcess = new();
-
-                return await _httpHelper.CreateFailedHttpResponseAsync(requestData, itemsToProcess);
-            }
 
             return await _httpHelper.CreateSuccessfulHttpResponseAsync(requestData, itemsToProcess);
         }

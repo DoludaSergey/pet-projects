@@ -6,16 +6,18 @@ namespace MarketingWebHooks.Services
 {
     public class ItemsLockProcessor
     {
-        public static async Task<List<T>?> GetItemsWithLockProcessing<T>(IBaseCosmosRepositoryWithGetWebhookStatuses<T> repository
+        public static async Task<List<T>> GetItemsWithLockProcessing<T>(IBaseCosmosRepositoryWithGetWebhookStatuses<T> repository
             , ILogger logger) where T : class, IEntityBaseWithLock
         {
             logger.LogInformation("GetItemsWithLockProcessing|Start");
+
+            List<T> itemsToProcess = new(0);
 
             try
             {
                 logger.LogInformation("GetItemsWithLockProcessing|Start GetItemsToProcess");
 
-                List<T>? itemsToProcess = await repository.GetItemsToProcess();
+                itemsToProcess = await repository.GetItemsToProcess();
 
                 logger.LogInformation("GetItemsWithLockProcessing|Finish GetItemsToProcess");
 
@@ -41,14 +43,14 @@ namespace MarketingWebHooks.Services
                     }
                 }
 
-                logger.LogInformation("GetItemsWithLockProcessing|itemsToProcess is null");
+                logger.LogInformation("GetItemsWithLockProcessing|There are no items to process!");
             }
             catch (Exception e)
             {
                 logger.LogError($"GetItemsWithLockProcessing|Error: {e.Message}");
             }
 
-            return null;
+            return itemsToProcess;
         }
     }
 }

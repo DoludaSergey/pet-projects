@@ -26,19 +26,10 @@ namespace MarketingWebHooks.Functions.HttpTriggers
         {
             _logger.LogInformation("GetFreeDdSmsNotificationStatuses|Start GetItemsWithLockProcessing");
 
-            List<FreeDdSmsNotificationStatus>? itemsToProcess = await ItemsLockProcessor
+            List<FreeDdSmsNotificationStatus> itemsToProcess = await ItemsLockProcessor
                                                 .GetItemsWithLockProcessing(_freeDdNotificationRepository, _logger);
 
             _logger.LogInformation("GetFreeDdSmsNotificationStatuses|Finish GetItemsWithLockProcessing");
-
-            if (itemsToProcess is null)
-            {
-                _logger.LogInformation("GetFreeDdSmsNotificationStatuses|itemsToProcess is null");
-
-                itemsToProcess = new();
-
-                return await _httpHelper.CreateFailedHttpResponseAsync(requestData, itemsToProcess);
-            }
 
             return await _httpHelper.CreateSuccessfulHttpResponseAsync(requestData, itemsToProcess);
         }

@@ -3,6 +3,7 @@ using MarketingWebHooks.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Azure.Functions.Worker.Http;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using System.Net;
 using System.Text.Json;
 
@@ -30,11 +31,17 @@ namespace MarketingWebHooks.Functions.HttpTriggers
 
             try
             {
-                var request = await JsonSerializer.DeserializeAsync<List<SendGridWebhookModel>>(requestData.Body);
+                var requestBody = await new StreamReader(requestData.Body).ReadToEndAsync();
+
+                _logger.LogInformation($"SendGridWebhook|requestBody - {requestBody}");
+
+                var request = JsonConvert.DeserializeObject<List<SendGridWebhookModel>>(requestBody);
+
+                //var request = await JsonSerializer.DeserializeAsync<List<SendGridWebhookModel>>(requestBody);
                 
-                if (request is null)
+                if (request is null || request.Count == 0)
                 {
-                    _logger.LogWarning("SendGridWebhook| request is null!");
+                    _logger.LogWarning("SendGridWebhook| request is null or empty!");
 
                     response = requestData.CreateResponse(HttpStatusCode.NoContent);
                     response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
@@ -65,6 +72,10 @@ namespace MarketingWebHooks.Functions.HttpTriggers
 
                         // Send a message to CampaignBroadcastQueue
                         await _queueMessageService.SendMessageCampaignBroadcastEmailBaseProcessAsync(item.ToCampaignBroadcastEmailStatus());
+                    }
+                    else 
+                    {
+                        _logger.LogInformation($"SendGridWebhook|item.CampaignBroadcastKey - {item.CampaignBroadcastKey}, Status - {item.Status}");
                     }
                 }                
             }

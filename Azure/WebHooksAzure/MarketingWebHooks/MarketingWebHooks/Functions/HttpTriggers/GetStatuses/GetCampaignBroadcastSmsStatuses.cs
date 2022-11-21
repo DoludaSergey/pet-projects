@@ -26,19 +26,10 @@ namespace MarketingWebHooks.Functions.HttpTriggers
         {
             _logger.LogInformation("GetCampaignBroadcastSmsStatuses|Start GetItemsWithLockProcessing");
 
-            List<CampaignBroadcastSmsStatus>? itemsToProcess = await ItemsLockProcessor
+            List<CampaignBroadcastSmsStatus> itemsToProcess = await ItemsLockProcessor
                                                 .GetItemsWithLockProcessing(_campaignBroadcastRepository, _logger);
 
             _logger.LogInformation("GetCampaignBroadcastSmsStatuses|Finish GetItemsWithLockProcessing");
-
-            if (itemsToProcess is null)
-            {
-                _logger.LogInformation("GetCampaignBroadcastSmsStatuses|itemsToProcess is null");
-
-                itemsToProcess = new();
-
-                return await _httpHelper.CreateFailedHttpResponseAsync(requestData, itemsToProcess);
-            }
 
             return await _httpHelper.CreateSuccessfulHttpResponseAsync(requestData, itemsToProcess);
         }
