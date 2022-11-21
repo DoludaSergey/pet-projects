@@ -21,5 +21,7 @@
         public string FreeDdSmsNotificationStatusContainerName { get; set; }
 
         public string InvalidPhoneNumberContainerName { get; set; }
+
+        public string CampaignBroadcastEmailStatusExtendedContainerName { get; set; }
     }
 }
