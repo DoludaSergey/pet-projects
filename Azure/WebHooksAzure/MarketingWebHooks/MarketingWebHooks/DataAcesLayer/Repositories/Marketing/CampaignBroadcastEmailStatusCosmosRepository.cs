@@ -12,11 +12,11 @@ namespace MarketingWebHooks.DataAcesLayer.Repositories
         public CampaignBroadcastEmailStatusCosmosRepository(ILoggerFactory loggerFactory, ICosmosRetryPolicy retryPolicy,
                                                   CosmosSettings cosmosSettings, CosmosClient cosmosClient)
         {
+            ContainerName = cosmosSettings.CampaignBroadcastEmailStatusContainerName;
+
             _logger = loggerFactory.CreateLogger<CampaignBroadcastEmailStatusCosmosRepository>();
             _retryPolicy = retryPolicy;
             _repositoryName = nameof(CampaignBroadcastEmailStatusCosmosRepository);
-
-            ContainerName = cosmosSettings.CampaignBroadcastEmailStatusContainerName;
             _container = cosmosClient.GetContainer(cosmosSettings.DatabaseName, ContainerName);
         }
     }

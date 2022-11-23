@@ -40,7 +40,7 @@ namespace MarketingWebHooks
                     //services.AddSingleton<IUploadFileValidator, UploadFileValidator>();
                     //services.AddSingleton<IUploadFileHelper, UploadFileHelper>();
                     services.AddSingleton<IHttpHelper, HttpHelper>();
-                    //services.AddScoped<IImageService, ImageService>();
+                    services.AddScoped<IMarketingService, MarketingService>();
                     services.AddSingleton<IQueueMessageService, AzurServiceBusQueueMessageService>();
                     services.AddSingleton<IRetryPolicy, RetryPolicy>();
 

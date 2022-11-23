@@ -35,10 +35,15 @@ namespace MarketingWebHooks.DataAcesLayer
             services.AddSingleton<ICosmosRetryPolicy, CosmosRetryPolicy>();
 
             services.AddScoped<ICampaignBroadcastEmailStatusRepository, CampaignBroadcastEmailStatusCosmosRepository>();
+            services.AddScoped<ICampaignBroadcastEmailStatusExtendedRepository, CampaignBroadcastEmailStatusExtendedCosmosRepository>();
             services.AddScoped<ICampaignBroadcastSmsStatusRepository, CampaignBroadcastSmsStatusCosmosRepository>();
             services.AddScoped<IFreeDdEmailNotificationRepository, FreeDdEmailNotificationCosmosRepository>();
             services.AddScoped<IFreeDdSmsNotificationRepository, FreeDdSmsNotificationCosmosRepository>();
             services.AddScoped<IInvalidPhoneNumberRepository, InvalidPhoneNumberCosmosRepository>();
+            services.AddScoped<ICampaignBroadcastStatisticDetailsWithDatesRepository, CampaignBroadcastStatisticDetailsWithDatesCosmosRepository>();
+            services.AddScoped<ICampaignStatisticDetailsRepository, CampaignStatisticDetailsCosmosRepository>();
+            services.AddScoped<IEventMarketingStatisticDetailsRepository, EventMarketingStatisticDetailsCosmosRepository>();
+            services.AddScoped<IPhotographerMarketingStatisticDetailsRepository, PhotographerMarketingStatisticDetailsCosmosRepository>();
 
             return services;
         }

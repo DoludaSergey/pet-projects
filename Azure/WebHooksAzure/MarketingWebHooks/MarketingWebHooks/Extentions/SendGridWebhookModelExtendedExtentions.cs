@@ -38,8 +38,8 @@ namespace MarketingWebHooks.Extentions
                 IsFreeDdNotificationForExpiringEvent = model.IsFreeDdNotificationForExpiringEvent,
                 PhotographerKey = model.PhotographerKey,
                 EventKey = model.EventKey,
-                CampaignKey = model.CampaignKey,
-                BroadcastKey = model.BroadcastKey,
+                //CampaignKey = model.CampaignKey,
+                //BroadcastKey = model.BroadcastKey,
                 SentDateTime = model.SentDateTime,
             };
 

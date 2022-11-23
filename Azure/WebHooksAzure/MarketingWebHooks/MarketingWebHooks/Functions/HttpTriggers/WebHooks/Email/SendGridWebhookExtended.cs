@@ -9,23 +9,23 @@ using System.Net;
 
 namespace MarketingWebHooks.Functions.HttpTriggers
 {
-    public class SendGridWebhookExtebded
+    public class SendGridWebhookExtended
     {
         private readonly ILogger _logger;
         private readonly IQueueMessageService _queueMessageService;
 
-        public SendGridWebhookExtebded(ILoggerFactory loggerFactory, IQueueMessageService queueMessageService)
+        public SendGridWebhookExtended(ILoggerFactory loggerFactory, IQueueMessageService queueMessageService)
         {
-            _logger = loggerFactory.CreateLogger<SendGridWebhookExtebded>();
+            _logger = loggerFactory.CreateLogger<SendGridWebhookExtended>();
             _queueMessageService = queueMessageService;
         }
 
-        [Function("SendGridWebhookExtebded")]
+        [Function("SendGridWebhookExtended")]
         public async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "post")] HttpRequestData requestData)
         {
             var executeTime = DateTime.UtcNow;
             
-            _logger.LogInformation("SendGridWebhookExtebded|Start");
+            _logger.LogInformation("SendGridWebhookExtended|Start");
 
             HttpResponseData response;
 
@@ -33,7 +33,7 @@ namespace MarketingWebHooks.Functions.HttpTriggers
             {
                 var requestBody = await new StreamReader(requestData.Body).ReadToEndAsync();
 
-                _logger.LogInformation($"SendGridWebhookExtebded|requestBody - {requestBody}");
+                _logger.LogInformation($"SendGridWebhookExtended|requestBody - {requestBody}");
 
                 var request = JsonConvert.DeserializeObject<List<SendGridWebhookModelExtended>>(requestBody);
 
@@ -41,14 +41,14 @@ namespace MarketingWebHooks.Functions.HttpTriggers
 
                 if (request is null)
                 {
-                    _logger.LogWarning("SendGridWebhookExtebded| request is null!");
+                    _logger.LogWarning("SendGridWebhookExtended| request is null!");
 
                     response = requestData.CreateResponse(HttpStatusCode.NoContent);
                     response.Headers.Add("Content-Type", "text/plain; charset=utf-8");
 
                     response.WriteString("Not Processed");
 
-                    _logger.LogInformation("SendGridWebhook|Finish");
+                    _logger.LogInformation("SendGridWebhookExtended|Finish");
 
                     return response;
                 }
@@ -60,7 +60,7 @@ namespace MarketingWebHooks.Functions.HttpTriggers
                     //this is Free DD email notification
                     if (item.FreeDdNotificationGroupKey.HasValue)
                     {
-                        _logger.LogInformation("SendGridWebhookExtebded|SendMessageFreeDdNotificationProcessAsync");
+                        _logger.LogInformation("SendGridWebhookExtended|SendMessageFreeDdNotificationProcessAsync");
 
                         // Send a message to FreeDdNotificationQueue
                         await _queueMessageService.SendMessageFreeDdNotificationEmailExtendedProcessAsync(item.ToFreeDdEmailNotificationStatusExtended());
@@ -68,12 +68,12 @@ namespace MarketingWebHooks.Functions.HttpTriggers
                     //this is Marketing Funnel email broadcast
                     else if (item.CampaignBroadcastKey > 0)
                     {
-                        _logger.LogInformation("SendGridWebhookExtebded|Start SendMessageCampaignBroadcastEmailExtendedProcessAsync");
+                        _logger.LogInformation("SendGridWebhookExtended|Start SendMessageCampaignBroadcastEmailExtendedProcessAsync");
 
                         // Send a message to CampaignBroadcastQueue
                         await _queueMessageService.SendMessageCampaignBroadcastEmailExtendedProcessAsync(item.ToCampaignBroadcastEmailStatusExtended());
 
-                        _logger.LogInformation("SendGridWebhookExtebded|Finish SendMessageCampaignBroadcastEmailExtendedProcessAsync");
+                        _logger.LogInformation("SendGridWebhookExtended|Finish SendMessageCampaignBroadcastEmailExtendedProcessAsync");
                     }
                 }                
             }
@@ -88,7 +88,7 @@ namespace MarketingWebHooks.Functions.HttpTriggers
 
             response.WriteString("Processed");
 
-            _logger.LogInformation("SendGridWebhookExtebded|Finish");
+            _logger.LogInformation("SendGridWebhookExtended|Finish");
 
             return response;
         }

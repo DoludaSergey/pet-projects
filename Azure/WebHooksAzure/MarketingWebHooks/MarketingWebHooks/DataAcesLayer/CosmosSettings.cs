@@ -23,5 +23,13 @@
         public string InvalidPhoneNumberContainerName { get; set; }
 
         public string CampaignBroadcastEmailStatusExtendedContainerName { get; set; }
+
+        public string BroadcastStatisticDetailsWithDatesContainerName { get; set; }
+
+        public string CampaignStatisticDetailsContainerName { get; set; }
+
+        public string EventMarketingStatisticDetailsContainerName { get; set; }
+
+        public string PhotographerMarketingStatisticDetailsContainerName { get; set; }
     }
 }
