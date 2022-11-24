@@ -1,4 +1,5 @@
 ﻿using MarketingWebHooks.DataAcesLayer.Interfaces;
+using MarketingWebHooks.DataAcesLayer.Repositories;
 using MarketingWebHooks.Entities.Base;
 using MarketingWebHooks.Enums;
 using MarketingWebHooks.Models;
@@ -26,6 +27,7 @@ namespace MarketingWebHooks.Services
 
         public async Task StatusProcess(MarketingStatisticModel marketingStatisticModel)
         {
+            // TODO Do we need process (save) 3 statuses only or all?            
             if (marketingStatisticModel.Status == MarketingStatisticStatus.Processed)
             {
                 return;
@@ -35,20 +37,30 @@ namespace MarketingWebHooks.Services
                 GetCampaignBroadcastStatisticPartialKey(marketingStatisticModel.PhotographerKey,
                 marketingStatisticModel.EventKey, marketingStatisticModel.CampaignKey, marketingStatisticModel.BroadcastKey,
                 marketingStatisticModel.CampaignBroadcastKey);
-
             string campaignStatisticPartialKey = GetCampaignStatisticPartialKey(marketingStatisticModel.PhotographerKey,
                 marketingStatisticModel.EventKey, marketingStatisticModel.CampaignKey);
-
             string eventStatisticPartialKey =
                 GetEventStatisticPartialKey(marketingStatisticModel.PhotographerKey, marketingStatisticModel.EventKey);
-
             string photographerStatisticPartialKey = GetPhotographerStatisticPartialKey(marketingStatisticModel.PhotographerKey);
 
             BroadcastStatisticDetailsWithDates? campaignBroadcastDetails = await _campaignBroadcastStatisticRepository.GetByIdAsnc(campaignBroadcastStatisticPartialKey);
-            StatisticDetails? campaignDetails = await _campaignStatisticRepository.GetByIdAsnc(campaignStatisticPartialKey);
-            StatisticDetails? eventDetails = await _eventStatisticRepository.GetByIdAsnc(eventStatisticPartialKey);
-            StatisticDetails? photographerDetails = await _photographerStatisticRepository.GetByIdAsnc(photographerStatisticPartialKey);
 
+            StatisticDetails? campaignDetails = await GetDataFromRepositoryWithNullCheckAsync(
+                (BaseCosmosRepository<StatisticDetails>)_campaignStatisticRepository,
+                campaignStatisticPartialKey,
+                marketingStatisticModel.CreationDate);
+
+            StatisticDetails? eventDetails = await GetDataFromRepositoryWithNullCheckAsync(
+                (BaseCosmosRepository<StatisticDetails>)_eventStatisticRepository,
+                eventStatisticPartialKey,
+                marketingStatisticModel.CreationDate);
+
+            StatisticDetails? photographerDetails = await GetDataFromRepositoryWithNullCheckAsync(
+                (BaseCosmosRepository<StatisticDetails>)_photographerStatisticRepository,
+                photographerStatisticPartialKey,
+                marketingStatisticModel.CreationDate);
+
+            
             // If it is null create a new
             if (campaignBroadcastDetails is null)
             {
@@ -60,34 +72,6 @@ namespace MarketingWebHooks.Services
                     BroadcastKey = marketingStatisticModel.BroadcastKey,
                     CampaignKey = marketingStatisticModel.CampaignKey,
                     CampaignBroadcastKey = marketingStatisticModel.CampaignBroadcastKey,
-                    CreationDate = marketingStatisticModel.CreationDate
-                };
-            }
-
-            // If it is null create a new
-            if (campaignDetails is null)
-            {
-                campaignDetails = new StatisticDetails()
-                {
-                    Id = campaignStatisticPartialKey,
-                    CreationDate = marketingStatisticModel.CreationDate
-                };
-            }
-
-            if (eventDetails is null)
-            {
-                eventDetails = new StatisticDetails()
-                {
-                    Id = eventStatisticPartialKey,
-                    CreationDate = marketingStatisticModel.CreationDate
-                };
-            }
-
-            if (photographerDetails is null)
-            {
-                photographerDetails = new StatisticDetails()
-                {
-                    Id = photographerStatisticPartialKey,
                     CreationDate = marketingStatisticModel.CreationDate
                 };
             }
@@ -143,6 +127,23 @@ namespace MarketingWebHooks.Services
             await _campaignStatisticRepository.UpdateAsync(campaignDetails);
             await _eventStatisticRepository.UpdateAsync(eventDetails);
             await _photographerStatisticRepository.UpdateAsync(photographerDetails);
+        }
+
+        private async Task<StatisticDetails> GetDataFromRepositoryWithNullCheckAsync(BaseCosmosRepository<StatisticDetails> repository,
+            string partialKey, DateTime createDate)
+        {
+            StatisticDetails? statisticDetails = await repository.GetByIdAsnc(partialKey);
+
+            if (statisticDetails is null)
+            {
+                statisticDetails = new StatisticDetails()
+                {
+                    Id = partialKey,
+                    CreationDate = createDate
+                };
+            }
+
+            return statisticDetails;
         }
 
         public async Task<MarketingStatisticResponseModel> GetCampaignBroadcastStatistic(int photographerKey, int eventKey,
