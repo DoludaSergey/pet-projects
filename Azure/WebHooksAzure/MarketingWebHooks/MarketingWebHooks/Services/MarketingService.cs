@@ -1,4 +1,5 @@
-﻿using MarketingWebHooks.DataAcesLayer.Interfaces;
+﻿using MarketingWebHooks.BL.MarketingStatusProcessors;
+using MarketingWebHooks.DataAcesLayer.Interfaces;
 using MarketingWebHooks.DataAcesLayer.Repositories;
 using MarketingWebHooks.Entities.Base;
 using MarketingWebHooks.Enums;
@@ -13,6 +14,7 @@ namespace MarketingWebHooks.Services
         private readonly ICampaignStatisticDetailsRepository _campaignStatisticRepository;
         private readonly IEventMarketingStatisticDetailsRepository _eventStatisticRepository;
         private readonly IPhotographerMarketingStatisticDetailsRepository _photographerStatisticRepository;
+        private IMarketingStatusProcessor _marketingStatusProcessor;
 
         public MarketingService(ICampaignBroadcastStatisticDetailsWithDatesRepository broadcastStatisticRepository,
             ICampaignStatisticDetailsRepository campaignStatisticRepository,
@@ -23,15 +25,40 @@ namespace MarketingWebHooks.Services
             _campaignStatisticRepository = campaignStatisticRepository;
             _eventStatisticRepository = eventStatisticRepository;
             _photographerStatisticRepository = photographerStatisticRepository;
+            _marketingStatusProcessor = new DefaultMarketingStatusProcessor();
         }
 
-        public async Task StatusProcess(MarketingStatisticModel marketingStatisticModel)
+        public void MarketingStatusProcessorInit(MarketingStatisticStatus statisticStatus)
+        {
+            switch (statisticStatus)
+            {
+                case MarketingStatisticStatus.Processed:
+                    _marketingStatusProcessor = new DefaultMarketingStatusProcessor();
+                    break;
+                case MarketingStatisticStatus.Open:
+                    _marketingStatusProcessor = new OpenMarketingStatusProcessor();
+                    break;
+                case MarketingStatisticStatus.Click:
+                    _marketingStatusProcessor = new ClickMarketingStatusProcessor();
+                    break;
+                case MarketingStatisticStatus.Unsubscribe:
+                    _marketingStatusProcessor = new UnsubscribeMarketingStatusProcessor();
+                    break;
+                default:
+                    _marketingStatusProcessor = new DefaultMarketingStatusProcessor();
+                    break;
+            }
+        }
+
+        public async Task StatusProcessAsync(MarketingStatisticModel marketingStatisticModel)
         {
             // TODO Do we need process (save) 3 statuses only or all?            
             if (marketingStatisticModel.Status == MarketingStatisticStatus.Processed)
             {
                 return;
             }
+
+            MarketingStatusProcessorInit(marketingStatisticModel.Status);
 
             string campaignBroadcastStatisticPartialKey = 
                 GetCampaignBroadcastStatisticPartialKey(marketingStatisticModel.PhotographerKey,
@@ -45,6 +72,7 @@ namespace MarketingWebHooks.Services
 
             BroadcastStatisticDetailsWithDates? campaignBroadcastDetails = await _campaignBroadcastStatisticRepository.GetByIdAsnc(campaignBroadcastStatisticPartialKey);
 
+            // TODO use parallel tasks
             StatisticDetails? campaignDetails = await GetDataFromRepositoryWithNullCheckAsync(
                 (BaseCosmosRepository<StatisticDetails>)_campaignStatisticRepository,
                 campaignStatisticPartialKey,
@@ -59,7 +87,6 @@ namespace MarketingWebHooks.Services
                 (BaseCosmosRepository<StatisticDetails>)_photographerStatisticRepository,
                 photographerStatisticPartialKey,
                 marketingStatisticModel.CreationDate);
-
             
             // If it is null create a new
             if (campaignBroadcastDetails is null)
@@ -76,51 +103,15 @@ namespace MarketingWebHooks.Services
                 };
             }
 
-            switch (marketingStatisticModel.Status)
+            List<StatisticDetails> statisticDetailsList = new List<StatisticDetails>
             {
-                case MarketingStatisticStatus.Open:
-                    //set OpenedDataTime only after first open
-                    if (campaignBroadcastDetails.OpenedDateTime == null)
-                    {
-                        campaignBroadcastDetails.OpenedDateTime = DateTime.UtcNow;
+                campaignDetails,
+                eventDetails,
+                photographerDetails
+            };
 
-                        ++campaignDetails.Opens;
-                        ++eventDetails.Opens;
-                        ++photographerDetails.Opens;
-                    }
-
-                    ++campaignBroadcastDetails.Opens;
-                    break;
-                case MarketingStatisticStatus.Click:
-
-                    //set LinkClickedDateTime only after first click
-                    if (campaignBroadcastDetails.LinkClickedDateTime == null)
-                    {
-                        campaignBroadcastDetails.LinkClickedDateTime = DateTime.UtcNow;
-
-                        ++campaignDetails.Clicks;
-                        ++eventDetails.Clicks;
-                        ++photographerDetails.Clicks;
-                    }
-
-                    ++campaignBroadcastDetails.Clicks;
-                    break;
-                case MarketingStatisticStatus.Unsubscribe:
-                    if (campaignBroadcastDetails.OptOutDateTime == null)
-                    {
-                        campaignBroadcastDetails.OptOutDateTime = DateTime.UtcNow;
-
-                        ++campaignDetails.Unsubscribes;
-                        ++eventDetails.Unsubscribes;
-                        ++photographerDetails.Unsubscribes;
-                    }
-
-                    ++campaignBroadcastDetails.Unsubscribes;
-                    // TODO Send some message for HHIH
-                    break;
-                default:
-                    break;
-            }
+            _marketingStatusProcessor?.Process(campaignBroadcastDetails, statisticDetailsList,
+                marketingStatisticModel.CreationDate);
 
             // Save to db
             await _campaignBroadcastStatisticRepository.UpdateAsync(campaignBroadcastDetails);

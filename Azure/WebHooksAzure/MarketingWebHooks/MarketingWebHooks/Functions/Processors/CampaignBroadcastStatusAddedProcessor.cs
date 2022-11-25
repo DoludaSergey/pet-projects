@@ -41,7 +41,7 @@ namespace MarketingWebHooks.Functions.Processors
 
                         _logger.LogInformation($"CampaignBroadcastStatusAddedProcessor|Started StatusProcess {item.Status} CampaignBroadcastKey - {marketingStatisticModel.CampaignBroadcastKey}");
 
-                        await _marketingService.StatusProcess(marketingStatisticModel);
+                        await _marketingService.StatusProcessAsync(marketingStatisticModel);
 
                         _logger.LogInformation($"CampaignBroadcastStatusAddedProcessor|Finished StatusProcess {item.Status} CampaignBroadcastKey - {marketingStatisticModel.CampaignBroadcastKey}");
                     }

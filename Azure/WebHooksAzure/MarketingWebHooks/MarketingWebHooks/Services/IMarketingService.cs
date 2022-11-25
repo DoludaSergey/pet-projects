@@ -9,6 +9,6 @@ namespace MarketingWebHooks.Services
         Task<MarketingStatisticResponseModel> GetCampaignStatistic(int photographerKey, int eventKey, int campaignKey);
         Task<MarketingStatisticResponseModel> GetEventStatistic(int photographerKey, int eventKey);
         Task<MarketingStatisticResponseModel> GetPhotographerStatistic(int photographerKey);
-        Task StatusProcess(MarketingStatisticModel marketingStatisticModel);
+        Task StatusProcessAsync(MarketingStatisticModel marketingStatisticModel);
     }
 }
