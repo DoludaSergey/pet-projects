@@ -9,10 +9,10 @@ namespace MarketingWebHooks.Functions.HttpTriggers
     public class GetPhotographerStatistic
     {
         private readonly ILogger _logger;
-        private readonly IMarketingService _marketingService;
+        private readonly IPhotographerStatisticService _marketingService;
         private readonly IHttpHelper _httpHelper;
 
-        public GetPhotographerStatistic(ILoggerFactory loggerFactory, IHttpHelper httpHelper, IMarketingService marketingService)
+        public GetPhotographerStatistic(ILoggerFactory loggerFactory, IHttpHelper httpHelper, IPhotographerStatisticService marketingService)
         {
             _logger = loggerFactory.CreateLogger<GetPhotographerStatistic>();
             _httpHelper = httpHelper;
@@ -24,6 +24,7 @@ namespace MarketingWebHooks.Functions.HttpTriggers
         {
             _logger.LogInformation("GetPhotographerStatistic|Start");
 
+            // TODO Get from request
             int photographerKey = 1;
 
             var statistic = await _marketingService.GetPhotographerStatisticAsync(photographerKey);

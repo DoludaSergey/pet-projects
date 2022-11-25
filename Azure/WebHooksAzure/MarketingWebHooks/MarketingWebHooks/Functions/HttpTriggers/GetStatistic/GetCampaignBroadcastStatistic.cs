@@ -9,10 +9,10 @@ namespace MarketingWebHooks.Functions.HttpTriggers
     public class GetCampaignBroadcastStatistic
     {
         private readonly ILogger _logger;
-        private readonly IMarketingService _marketingService;
+        private readonly ICampaignBroadcastStatisticService _marketingService;
         private readonly IHttpHelper _httpHelper;
 
-        public GetCampaignBroadcastStatistic(ILoggerFactory loggerFactory, IHttpHelper httpHelper, IMarketingService marketingService)
+        public GetCampaignBroadcastStatistic(ILoggerFactory loggerFactory, IHttpHelper httpHelper, ICampaignBroadcastStatisticService marketingService)
         {
             _logger = loggerFactory.CreateLogger<GetCampaignBroadcastStatistic>();
             _httpHelper = httpHelper;
@@ -24,6 +24,7 @@ namespace MarketingWebHooks.Functions.HttpTriggers
         {
             _logger.LogInformation("GetEmailStatuses|Start GetItemsWithLockProcessing");
 
+            // TODO Get from request
             int photographerKey = 1;
             int eventKey = 2;
             int campaignKey = 3;

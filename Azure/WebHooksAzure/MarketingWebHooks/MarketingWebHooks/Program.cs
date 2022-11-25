@@ -1,6 +1,7 @@
-using Azure.Core;
+using MarketingWebHooks.BL.Processors;
 using MarketingWebHooks.DataAcesLayer;
 using MarketingWebHooks.Helpers;
+using MarketingWebHooks.Providers;
 using MarketingWebHooks.ResiliencePolicy;
 using MarketingWebHooks.Services;
 using Microsoft.Extensions.Configuration;
@@ -36,16 +37,17 @@ namespace MarketingWebHooks
                 {
                     //services.AddAzureAppConfiguration();
 
-                    //services.AddSingleton<IImageResizer, ImageSharpResizer>();
-                    //services.AddSingleton<IUploadFileValidator, UploadFileValidator>();
-                    //services.AddSingleton<IUploadFileHelper, UploadFileHelper>();
                     services.AddSingleton<IHttpHelper, HttpHelper>();
-                    services.AddScoped<IMarketingService, MarketingService>();
+                    services.AddScoped<ICampaignBroadcastStatisticService, CampaignBroadcastStatisticService>();
+                    services.AddScoped<ICampaignStatisticService, CampaignStatisticService>();
+                    services.AddScoped<IEventStatisticService, EventStatisticService>();
+                    services.AddScoped<IPhotographerStatisticService, PhotographerStatisticService>();
+                    services.AddScoped<IStatusAddedProcessor, StatusAddedProcessor>();
+                    services.AddScoped<IStatisticDetailsRepositoryProvider, StatisticDetailsRepositoryProvider>();
                     services.AddSingleton<IQueueMessageService, AzurServiceBusQueueMessageService>();
                     services.AddSingleton<IRetryPolicy, RetryPolicy>();
 
                     services.AddCosmosRepository(config);
-                    //services.AddAzureBlobStorage(config);
 
                     //services.AddHttpClient<IHHIHHttpClient, HHIHHttpClient>(httpClient =>
                     //{

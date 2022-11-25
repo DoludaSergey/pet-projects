@@ -1,7 +1,7 @@
+using MarketingWebHooks.BL.Processors;
 using MarketingWebHooks.Entities;
 using MarketingWebHooks.Enums;
 using MarketingWebHooks.Models;
-using MarketingWebHooks.Services;
 using Microsoft.Azure.Functions.Worker;
 using Microsoft.Extensions.Logging;
 
@@ -10,12 +10,12 @@ namespace MarketingWebHooks.Functions.Processors
     public class CampaignBroadcastStatusAddedProcessor
     {
         private readonly ILogger _logger;
-        private readonly IMarketingService _marketingService;
+        private readonly IStatusAddedProcessor _statusAddedProcessor;
 
-        public CampaignBroadcastStatusAddedProcessor(ILoggerFactory loggerFactory, IMarketingService marketingService)
+        public CampaignBroadcastStatusAddedProcessor(ILoggerFactory loggerFactory, IStatusAddedProcessor statusAddedProcessor)
         {
             _logger = loggerFactory.CreateLogger<CampaignBroadcastStatusAddedProcessor>();
-            _marketingService = marketingService;
+            _statusAddedProcessor = statusAddedProcessor;
         }
 
         [Function("CampaignBroadcastStatusAddedProcessor")]
@@ -41,7 +41,7 @@ namespace MarketingWebHooks.Functions.Processors
 
                         _logger.LogInformation($"CampaignBroadcastStatusAddedProcessor|Started StatusProcess {item.Status} CampaignBroadcastKey - {marketingStatisticModel.CampaignBroadcastKey}");
 
-                        await _marketingService.StatusProcessAsync(marketingStatisticModel);
+                        await _statusAddedProcessor.StatusProcessAsync(marketingStatisticModel);
 
                         _logger.LogInformation($"CampaignBroadcastStatusAddedProcessor|Finished StatusProcess {item.Status} CampaignBroadcastKey - {marketingStatisticModel.CampaignBroadcastKey}");
                     }

@@ -30,16 +30,5 @@ namespace MarketingWebHooks.Models
             Status = status;
             CreationDate = creationDate;
         }
-
-        public string CampaignBroadcastStatisticPartialKey => 
-            $"{this.PhotographerKey}|{this.EventKey}|{this.CampaignKey}|{this.BroadcastKey}|{this.CampaignBroadcastKey}";
-
-        public string CampaignStatisticPartialKey => $"{this.PhotographerKey}|{this.EventKey}|{this.CampaignKey}";
-
-        public string EventStatisticPartialKey => $"{this.PhotographerKey}|{this.EventKey}";
-
-        public string PhotographerStatisticPartialKey => $"{this.PhotographerKey}";
-
-
     }
 }

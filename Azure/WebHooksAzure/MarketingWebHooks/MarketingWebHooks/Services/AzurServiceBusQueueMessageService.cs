@@ -2,6 +2,7 @@
 using MarketingWebHooks.Entities;
 using MarketingWebHooks.Entities.CampaignBroadcast;
 using MarketingWebHooks.Entities.FreeDdNotification;
+using MarketingWebHooks.Helpers;
 using MarketingWebHooks.ResiliencePolicy;
 using Microsoft.Extensions.Logging;
 using System.Text.Json;
@@ -112,9 +113,9 @@ namespace MarketingWebHooks.Services
                 Subject = senderName // Label
             };
 
-            //int scheduleMessageTimeDelayInHours = EnvironmentVariableHelper.GetEnvironmentVariableOrDefaulf("MESSAGE_TIME_DELAY_IN_HOURS", 3 * 24);
+            int scheduleMessageTimeDelayInHours = EnvironmentVariableHelper.GetEnvironmentVariableOrDefaulf("MESSAGE_TIME_DELAY_IN_HOURS", 3 * 24);
 
-            var scheduledTime = DateTimeOffset.UtcNow.AddHours(1);
+            var scheduledTime = DateTimeOffset.UtcNow.AddHours(scheduleMessageTimeDelayInHours);
 
             message.ApplicationProperties.Add("Machine", Environment.MachineName);
 

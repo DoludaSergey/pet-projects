@@ -9,10 +9,10 @@ namespace MarketingWebHooks.Functions.HttpTriggers
     public class GetEventStatistic
     {
         private readonly ILogger _logger;
-        private readonly IMarketingService _marketingService;
+        private readonly IEventStatisticService _marketingService;
         private readonly IHttpHelper _httpHelper;
 
-        public GetEventStatistic(ILoggerFactory loggerFactory, IHttpHelper httpHelper, IMarketingService marketingService)
+        public GetEventStatistic(ILoggerFactory loggerFactory, IHttpHelper httpHelper, IEventStatisticService marketingService)
         {
             _logger = loggerFactory.CreateLogger<GetEventStatistic>();
             _httpHelper = httpHelper;
@@ -24,6 +24,7 @@ namespace MarketingWebHooks.Functions.HttpTriggers
         {
             _logger.LogInformation("GetEventStatistic|Start");
 
+            // TODO Get from request
             int photographerKey = 1;
             int eventKey = 2;
 
