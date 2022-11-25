@@ -5,6 +5,7 @@ using MarketingWebHooks.Entities.Base;
 using MarketingWebHooks.Enums;
 using MarketingWebHooks.Models;
 using MarketingWebHooks.Models.Responses;
+using MarketingWebHooks.Providers;
 
 namespace MarketingWebHooks.Services
 {
@@ -28,16 +29,9 @@ namespace MarketingWebHooks.Services
             _marketingStatusProcessor = new DefaultMarketingStatusProcessor();
         }
 
-        public void MarketingStatusProcessorInit(MarketingStatisticStatus statisticStatus)
+        private void MarketingStatusProcessorInit(MarketingStatisticStatus statisticStatus)
         {
-            _marketingStatusProcessor = statisticStatus switch
-            {
-                MarketingStatisticStatus.Processed => new DefaultMarketingStatusProcessor(),
-                MarketingStatisticStatus.Open => new OpenMarketingStatusProcessor(),
-                MarketingStatisticStatus.Click => new ClickMarketingStatusProcessor(),
-                MarketingStatisticStatus.Unsubscribe => new UnsubscribeMarketingStatusProcessor(),
-                _ => new DefaultMarketingStatusProcessor(),
-            };
+            _marketingStatusProcessor = MarketingStatusProcessorProvider.GetProcessor(statisticStatus);
         }
 
         public async Task StatusProcessAsync(MarketingStatisticModel marketingStatisticModel)
