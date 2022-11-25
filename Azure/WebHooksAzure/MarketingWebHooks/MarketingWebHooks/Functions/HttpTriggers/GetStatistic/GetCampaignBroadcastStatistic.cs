@@ -30,7 +30,7 @@ namespace MarketingWebHooks.Functions.HttpTriggers
             int broadcastKey = 4;
             int campaignBroadcastKey = 5;
 
-            var statistic = await _marketingService.GetCampaignBroadcastStatistic(photographerKey, eventKey,
+            var statistic = await _marketingService.GetCampaignBroadcastStatisticAsync(photographerKey, eventKey,
                                         campaignKey, broadcastKey, campaignBroadcastKey);
 
             _logger.LogInformation("GetEmailStatuses|Finish GetItemsWithLockProcessing");

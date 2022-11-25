@@ -27,7 +27,7 @@ namespace MarketingWebHooks.Functions.HttpTriggers
             int photographerKey = 1;
             int eventKey = 2;
 
-            var statistic = await _marketingService.GetEventStatistic(photographerKey, eventKey);
+            var statistic = await _marketingService.GetEventStatisticAsync(photographerKey, eventKey);
 
             _logger.LogInformation("GetEventStatistic|Finish");
 
