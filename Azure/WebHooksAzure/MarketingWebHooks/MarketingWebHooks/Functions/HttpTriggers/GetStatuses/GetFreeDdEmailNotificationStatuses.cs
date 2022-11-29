@@ -22,12 +22,12 @@ namespace MarketingWebHooks.Functions.HttpTriggers
         }
 
         [Function("GetFreeDdEmailNotificationStatuses")]
-        public async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData requestData)
+        public async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData requestData, int batchSize)
         {
             _logger.LogInformation("GetFreeDdEmailNotificationStatuses|Start GetItemsWithLockProcessing");
 
             List<FreeDdEmailNotificationStatus> itemsToProcess = await ItemsLockProcessor
-                                                .GetItemsWithLockProcessing(_freeDdElailNotificationRepository, _logger);
+                                                .GetItemsWithLockProcessing(_freeDdElailNotificationRepository, _logger, batchSize);
 
             _logger.LogInformation("GetFreeDdEmailNotificationStatuses|Finish GetItemsWithLockProcessing");
 

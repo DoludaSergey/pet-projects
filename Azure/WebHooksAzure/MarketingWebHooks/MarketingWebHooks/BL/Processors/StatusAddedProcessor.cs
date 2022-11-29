@@ -48,6 +48,16 @@ namespace MarketingWebHooks.BL.Processors
             await SaveStatisticDetails(statisticRepositoriesDictionary, statisticDetailsDictionary, campaignBroadcastDetails);
         }
 
+        /// <summary>
+        /// Get BroadcastStatisticDetailsWithDates from db
+        /// If it is first call for the campaign broadcast create a new record in db
+        /// Also set all statictics details from all statistic containers into statisticRepositoriesDictionary
+        /// List of statistic containers provided by StatisticDetailsRepositoryProvider
+        /// </summary>
+        /// <param name="marketingStatisticModel">Request model</param>
+        /// <param name="statisticRepositoriesDictionary">Collection of statistic repositories</param>
+        /// <param name="statisticDetailsDictionary">Collection of statistic results from each repository</param>
+        /// <returns>BroadcastStatisticDetailsWithDates</returns>
         private async Task<BroadcastStatisticDetailsWithDates> GetStatisticDetails(MarketingStatisticModel marketingStatisticModel,
             Dictionary<Type, IRepository<StatisticDetails>> statisticRepositoriesDictionary,
             Dictionary<Type, StatisticDetails> statisticDetailsDictionary)

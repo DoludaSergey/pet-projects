@@ -22,12 +22,12 @@ namespace MarketingWebHooks.Functions.HttpTriggers
         }
 
         [Function("GetInvalidPhoneNumbers")]
-        public async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData requestData)
+        public async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData requestData, int batchSize)
         {
             _logger.LogInformation("GetInvalidPhoneNumbers|Start GetItemsWithLockProcessing");
 
             List<InvalidPhoneNumber> itemsToProcess = await ItemsLockProcessor
-                                                .GetItemsWithLockProcessing(_invalidPhoneRepository, _logger);
+                                                .GetItemsWithLockProcessing(_invalidPhoneRepository, _logger, batchSize);
 
             _logger.LogInformation("GetInvalidPhoneNumbers|Finish GetItemsWithLockProcessing");
 

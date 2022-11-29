@@ -7,7 +7,7 @@ namespace MarketingWebHooks.Services
     public class ItemsLockProcessor
     {
         public static async Task<List<T>> GetItemsWithLockProcessing<T>(IBaseCosmosRepositoryWithGetWebhookStatuses<T> repository
-            , ILogger logger) where T : class, IEntityBaseWithLock
+            , ILogger logger, int countToProcess) where T : class, IEntityBaseWithLock
         {
             logger.LogInformation("GetItemsWithLockProcessing|Start");
 
@@ -17,7 +17,7 @@ namespace MarketingWebHooks.Services
             {
                 logger.LogInformation("GetItemsWithLockProcessing|Start GetItemsToProcess");
 
-                itemsToProcess = await repository.GetItemsToProcess();
+                itemsToProcess = await repository.GetItemsToProcess(countToProcess);
 
                 logger.LogInformation("GetItemsWithLockProcessing|Finish GetItemsToProcess");
 

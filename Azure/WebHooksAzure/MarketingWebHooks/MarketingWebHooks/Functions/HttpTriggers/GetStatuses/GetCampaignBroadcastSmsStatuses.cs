@@ -22,12 +22,12 @@ namespace MarketingWebHooks.Functions.HttpTriggers
         }
 
         [Function("GetCampaignBroadcastSmsStatuses")]
-        public async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData requestData)
+        public async Task<HttpResponseData> RunAsync([HttpTrigger(AuthorizationLevel.Anonymous, "get")] HttpRequestData requestData, int batchSize)
         {
             _logger.LogInformation("GetCampaignBroadcastSmsStatuses|Start GetItemsWithLockProcessing");
 
             List<CampaignBroadcastSmsStatus> itemsToProcess = await ItemsLockProcessor
-                                                .GetItemsWithLockProcessing(_campaignBroadcastRepository, _logger);
+                                                .GetItemsWithLockProcessing(_campaignBroadcastRepository, _logger, batchSize);
 
             _logger.LogInformation("GetCampaignBroadcastSmsStatuses|Finish GetItemsWithLockProcessing");
 
