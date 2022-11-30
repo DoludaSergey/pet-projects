@@ -9,10 +9,10 @@ namespace MarketingWebHooks.Functions.Processors
     public class CampaignBroadcastEmailStatusDeleteProcessor
     {
         private readonly ILogger _logger;
-        private readonly ICampaignBroadcastEmailStatusExtendedRepository _campaignBroadcastRepository;
+        private readonly ICampaignBroadcastEmailStatusRepository _campaignBroadcastRepository;
 
-        public CampaignBroadcastEmailStatusDeleteProcessor(ILoggerFactory loggerFactory, 
-            ICampaignBroadcastEmailStatusExtendedRepository campaignBroadcastRepository)
+        public CampaignBroadcastEmailStatusDeleteProcessor(ILoggerFactory loggerFactory,
+            ICampaignBroadcastEmailStatusRepository campaignBroadcastRepository)
         {
             _logger = loggerFactory.CreateLogger<CampaignBroadcastEmailStatusDeleteProcessor>();
             _campaignBroadcastRepository = campaignBroadcastRepository;
@@ -26,11 +26,7 @@ namespace MarketingWebHooks.Functions.Processors
 
             try
             {
-                string campaignBroadcastEmailStatusId = JsonSerializer.Deserialize<string>(myQueueItem);
-
-                _logger.LogInformation($"CampaignBroadcastEmailStatusDeleteProcessor: the queue message was Deserialized");
-
-                await _campaignBroadcastRepository.RemoveAsync(campaignBroadcastEmailStatusId);
+                await _campaignBroadcastRepository.RemoveAsync(myQueueItem);
 
                 _logger.LogInformation($"CampaignBroadcastEmailStatusDeleteProcessor: Finished ");
             }
