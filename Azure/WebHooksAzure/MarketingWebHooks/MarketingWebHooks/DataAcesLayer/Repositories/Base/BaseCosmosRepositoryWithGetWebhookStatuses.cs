@@ -16,7 +16,7 @@ namespace MarketingWebHooks.DataAcesLayer.Repositories
                 var deltaTime = DateTime.UtcNow
                     .AddHours(EnvironmentVariableHelper.GetEnvironmentVariableOrDefaulf("LOCK_DATA_TIME_DELTA_IN_HOURS", 10));
 
-                var queryString = $"SELECT TOP {countToProcess} * FROM {ContainerName} c WHERE c.IsLocked = false AND c.LockDate < \"{deltaTime}\"";
+                var queryString = $"SELECT TOP {countToProcess} * FROM {ContainerName} c WHERE c.IsLocked = false OR c.LockDate < \"{deltaTime}\"";
 
                 List<T> items = new List<T>();
 

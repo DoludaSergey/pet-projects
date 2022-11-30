@@ -22,7 +22,7 @@ namespace MarketingWebHooks.Services
         public const string SERVER_BUS_QUEUE_CAMPAIGN_BROADCAST_SMS_STATUS_PROCESS = "campaign-broadcast-sms-status-process";
         public const string SERVER_BUS_QUEUE_FREE_DD_NOTIFICATION_SMS_STATUS_PROCESS = "free-dd-notification-sms-status-process";
         public const string SERVER_BUS_QUEUE_INVALID_PHONE_NUMBERS_PROCESS = "invalid-phone-numbers-process";
-
+        public const string SERVER_BUS_QUEUE_CAMPAIGN_BROADCAST_EMAIL_STATUS_DELETE_PROCESS = "delete-campaign-broadcast-email-status";
 
         public AzurServiceBusQueueMessageService(ILoggerFactory loggerFactory, IRetryPolicy retryPolicy)
         {
